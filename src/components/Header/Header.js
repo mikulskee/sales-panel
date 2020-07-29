@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { NavLink } from 'react-router-dom';
 import { Logo } from '../Logo/Logo';
 import MenuIcon from '@material-ui/icons/Menu';
 import AssessmentIcon from '@material-ui/icons/Assessment';
@@ -44,7 +45,6 @@ const TreeItemLabel = styled.div`
   align-items: center;
   margin-top: 10px;
   padding: 5px 10px;
-  background-color: #212121;
   transition: background-color 0.1s linear;
   border-top-right-radius: 20px;
   border-bottom-right-radius: 20px;
@@ -55,7 +55,7 @@ const TreeItemLabel = styled.div`
 `;
 
 const StyledTreeItem = styled(TreeItem)`
-  background-color: #212121;
+  /* background-color: #212121;
 
   .MuiTreeItem-root.Mui-selected .tree-item-label {
     background-color: #aaa;
@@ -63,6 +63,18 @@ const StyledTreeItem = styled(TreeItem)`
 
   &.Mui-selected .tree-item-label-Main {
     background-color: #aaa;
+  } */
+`;
+
+const StyledLink = styled(NavLink)`
+  display: block;
+  color: white;
+  text-decoration: none;
+
+  &.active {
+    .tree-item-label {
+      background-color: #aaa;
+    }
   }
 `;
 
@@ -126,34 +138,52 @@ const Header = () => {
             <StyledTreeItem
               nodeId='2'
               label={
-                <TreeItemLabel className='tree-item-label'>
-                  <AssignmentIndIcon
-                    style={{ display: 'block', marginRight: '5px' }}
-                  />
-                  {'Stan indywidualny'}
-                </TreeItemLabel>
+                <StyledLink
+                  to='personal-state'
+                  activeClassName='active'
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <TreeItemLabel className='tree-item-label'>
+                    <AssignmentIndIcon
+                      style={{ display: 'block', marginRight: '5px' }}
+                    />
+                    {'Stan indywidualny'}
+                  </TreeItemLabel>
+                </StyledLink>
               }
             />
             <StyledTreeItem
               nodeId='3'
               label={
-                <TreeItemLabel className='tree-item-label'>
-                  <BarChartIcon
-                    style={{ display: 'block', marginRight: '5px' }}
-                  />
-                  {'Stan firmowy ogólny'}
-                </TreeItemLabel>
+                <StyledLink
+                  to='company-state'
+                  activeClassName='active'
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <TreeItemLabel className='tree-item-label'>
+                    <BarChartIcon
+                      style={{ display: 'block', marginRight: '5px' }}
+                    />
+                    {'Stan firmowy ogólny'}
+                  </TreeItemLabel>
+                </StyledLink>
               }
             />
             <StyledTreeItem
               nodeId='4'
               label={
-                <TreeItemLabel className='tree-item-label'>
-                  <EventNoteIcon
-                    style={{ display: 'block', marginRight: '5px' }}
-                  />
-                  {'Stan firmowy miesięczny'}
-                </TreeItemLabel>
+                <StyledLink
+                  to='company-state-monthly'
+                  activeClassName='active'
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <TreeItemLabel className='tree-item-label'>
+                    <EventNoteIcon
+                      style={{ display: 'block', marginRight: '5px' }}
+                    />
+                    {'Stan firmowy miesięczny'}
+                  </TreeItemLabel>
+                </StyledLink>
               }
             />
           </StyledTreeItem>

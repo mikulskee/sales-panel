@@ -1,15 +1,26 @@
 import React from 'react';
-import styled from 'styled-components';
+import { Route, Switch, BrowserRouter } from 'react-router-dom';
 
 import Header from './components/Header/Header';
-
-const Wrapper = styled.div``;
+import CompanyState from './templates/CompanyState';
+import PersonalState from './templates/PersonalState';
+import CompanyStateMonthly from './templates/CompanyStateMonthly';
 
 const App = () => {
   return (
-    <Wrapper>
-      <Header />
-    </Wrapper>
+    <>
+      <BrowserRouter>
+        <Header />
+        <Switch>
+          <Route path='/personal-state' component={PersonalState} />
+          <Route path='/company-state' component={CompanyState} />
+          <Route
+            path='/company-state-monthly'
+            component={CompanyStateMonthly}
+          />
+        </Switch>
+      </BrowserRouter>
+    </>
   );
 };
 
