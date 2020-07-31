@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import firebase from '../../firebase';
 import styled from 'styled-components';
@@ -24,6 +24,7 @@ import {
 } from '@material-ui/core';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
+import { UserContext } from '../../contexts/UserContext';
 
 const Wrapper = styled.header`
   background-color: #fff;
@@ -69,6 +70,7 @@ const StyledLink = styled(NavLink)`
 `;
 
 const Header = (props) => {
+  const { user } = useContext(UserContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleLogout = (e) => {
     e.preventDefault();
@@ -80,12 +82,15 @@ const Header = (props) => {
     <Wrapper>
       <Grid container style={{ padding: '20px' }} justify='space-between'>
         <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-          <IconButton
-            onClick={() => setIsMenuOpen(true)}
-            style={{ marginRight: '10px' }}
-          >
-            <MenuIcon fontSize='inherit' />
-          </IconButton>
+          {user ? (
+            <IconButton
+              onClick={() => setIsMenuOpen(true)}
+              style={{ marginRight: '10px' }}
+            >
+              <MenuIcon fontSize='inherit' />
+            </IconButton>
+          ) : null}
+
           <Logo>
             <span>Sales</span> Panel
           </Logo>
@@ -93,133 +98,137 @@ const Header = (props) => {
 
         <Grid item>
           <Grid container spacing={2}>
-            <Grid item>
-              <Avatar>AK</Avatar>
+            <Grid item>{user ? <Avatar>{user.initials}</Avatar> : user}</Grid>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
+              {user ? <Typography variant='h6'>{user.name}</Typography> : user}
             </Grid>
             <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-              <Typography variant='h6'>Anna Kliś</Typography>{' '}
-            </Grid>
-            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-              <Button
-                variant='contained'
-                color='primary'
-                onClick={handleLogout}
-              >
-                Wyloguj
-              </Button>
+              {user ? (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={handleLogout}
+                >
+                  Wyloguj
+                </Button>
+              ) : (
+                user
+              )}
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      <StyledDrawer
-        anchor='left'
-        open={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-      >
-        <TreeView
-          defaultCollapseIcon={<ArrowDropDownIcon />}
-          defaultExpandIcon={<ArrowRightIcon />}
-          defaultExpanded={['1']}
+      {user ? (
+        <StyledDrawer
+          anchor='left'
+          open={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
         >
-          <TreeItem
-            nodeId='1'
-            label={
-              <TreeItemLabel
-                style={{ marginTop: '0px' }}
-                className='tree-item-label-Main'
-              >
-                <AssessmentIcon
-                  style={{ display: 'block', marginRight: '5px' }}
-                />
-                {'Stan firmowy'}
-              </TreeItemLabel>
-            }
+          <TreeView
+            defaultCollapseIcon={<ArrowDropDownIcon />}
+            defaultExpandIcon={<ArrowRightIcon />}
+            defaultExpanded={['1']}
           >
             <TreeItem
-              nodeId='2'
+              nodeId='1'
               label={
-                <StyledLink
-                  to='personal-state'
-                  activeClassName='active'
-                  onClick={() => setIsMenuOpen(false)}
+                <TreeItemLabel
+                  style={{ marginTop: '0px' }}
+                  className='tree-item-label-Main'
                 >
-                  <TreeItemLabel className='tree-item-label'>
-                    <AssignmentIndIcon
-                      style={{ display: 'block', marginRight: '5px' }}
-                    />
-                    {'Stan indywidualny'}
-                  </TreeItemLabel>
-                </StyledLink>
+                  <AssessmentIcon
+                    style={{ display: 'block', marginRight: '5px' }}
+                  />
+                  {'Stan firmowy'}
+                </TreeItemLabel>
+              }
+            >
+              <TreeItem
+                nodeId='2'
+                label={
+                  <StyledLink
+                    to='personal-state'
+                    activeClassName='active'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <TreeItemLabel className='tree-item-label'>
+                      <AssignmentIndIcon
+                        style={{ display: 'block', marginRight: '5px' }}
+                      />
+                      {'Stan indywidualny'}
+                    </TreeItemLabel>
+                  </StyledLink>
+                }
+              />
+              <TreeItem
+                nodeId='3'
+                label={
+                  <StyledLink
+                    to='company-state'
+                    activeClassName='active'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <TreeItemLabel className='tree-item-label'>
+                      <BarChartIcon
+                        style={{ display: 'block', marginRight: '5px' }}
+                      />
+                      {'Stan firmowy ogólny'}
+                    </TreeItemLabel>
+                  </StyledLink>
+                }
+              />
+              <TreeItem
+                nodeId='4'
+                label={
+                  <StyledLink
+                    to='company-state-monthly'
+                    activeClassName='active'
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <TreeItemLabel className='tree-item-label'>
+                      <EventNoteIcon
+                        style={{ display: 'block', marginRight: '5px' }}
+                      />
+                      {'Stan firmowy miesięczny'}
+                    </TreeItemLabel>
+                  </StyledLink>
+                }
+              />
+            </TreeItem>
+            <TreeItem
+              nodeId='5'
+              label={
+                <TreeItemLabel className='tree-item-label-Main'>
+                  <AssistantIcon
+                    style={{ display: 'block', marginRight: '5px' }}
+                  />
+                  {'Mentoring'}
+                </TreeItemLabel>
               }
             />
             <TreeItem
-              nodeId='3'
+              nodeId='6'
               label={
-                <StyledLink
-                  to='company-state'
-                  activeClassName='active'
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <TreeItemLabel className='tree-item-label'>
-                    <BarChartIcon
-                      style={{ display: 'block', marginRight: '5px' }}
-                    />
-                    {'Stan firmowy ogólny'}
-                  </TreeItemLabel>
-                </StyledLink>
+                <TreeItemLabel className='tree-item-label-Main'>
+                  <MenuBookIcon
+                    style={{ display: 'block', marginRight: '5px' }}
+                  />
+                  {'Manual sprzedażowy'}
+                </TreeItemLabel>
               }
             />
             <TreeItem
-              nodeId='4'
+              nodeId='7'
               label={
-                <StyledLink
-                  to='company-state-monthly'
-                  activeClassName='active'
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <TreeItemLabel className='tree-item-label'>
-                    <EventNoteIcon
-                      style={{ display: 'block', marginRight: '5px' }}
-                    />
-                    {'Stan firmowy miesięczny'}
-                  </TreeItemLabel>
-                </StyledLink>
+                <TreeItemLabel className='tree-item-label'>
+                  <BuildIcon style={{ display: 'block', marginRight: '5px' }} />
+                  {'Zarządzanie klientami'}
+                </TreeItemLabel>
               }
             />
-          </TreeItem>
-          <TreeItem
-            nodeId='5'
-            label={
-              <TreeItemLabel className='tree-item-label-Main'>
-                <AssistantIcon
-                  style={{ display: 'block', marginRight: '5px' }}
-                />
-                {'Mentoring'}
-              </TreeItemLabel>
-            }
-          />
-          <TreeItem
-            nodeId='6'
-            label={
-              <TreeItemLabel className='tree-item-label-Main'>
-                <MenuBookIcon
-                  style={{ display: 'block', marginRight: '5px' }}
-                />
-                {'Manual sprzedażowy'}
-              </TreeItemLabel>
-            }
-          />
-          <TreeItem
-            nodeId='7'
-            label={
-              <TreeItemLabel className='tree-item-label'>
-                <BuildIcon style={{ display: 'block', marginRight: '5px' }} />
-                {'Zarządzanie klientami'}
-              </TreeItemLabel>
-            }
-          />
-        </TreeView>
-      </StyledDrawer>
+          </TreeView>
+        </StyledDrawer>
+      ) : null}
     </Wrapper>
   );
 };

@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import firebase from '../../firebase';
+import { withRouter } from 'react-router-dom';
 import {
   Paper,
   Grid,
@@ -15,10 +16,7 @@ import {
 import Alert from '@material-ui/lab/Alert';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
-import { UserContext } from '../../contexts/UserContext';
-const LoginModal = () => {
-  const { setUser } = useContext(UserContext);
-
+const LoginModal = (props) => {
   const [values, setValues] = useState({
     password: '',
     login: '',
@@ -46,6 +44,7 @@ const LoginModal = () => {
       .signInWithEmailAndPassword(values.login, values.password)
       .then((cred) => {
         setIsLoading(false);
+        console.log(props.history.push('/'));
       })
       .catch((err) => {
         setIsLoading(false);
@@ -151,4 +150,4 @@ const LoginModal = () => {
   );
 };
 
-export default LoginModal;
+export default withRouter(LoginModal);
