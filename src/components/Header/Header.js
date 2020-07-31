@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { withRouter } from 'react-router-dom';
+import firebase from '../../firebase';
 import styled from 'styled-components';
 import { NavLink } from 'react-router-dom';
 import { Logo } from '../Logo/Logo';
@@ -54,18 +56,6 @@ const TreeItemLabel = styled.div`
   }
 `;
 
-const StyledTreeItem = styled(TreeItem)`
-  /* background-color: #212121;
-
-  .MuiTreeItem-root.Mui-selected .tree-item-label {
-    background-color: #aaa;
-  }
-
-  &.Mui-selected .tree-item-label-Main {
-    background-color: #aaa;
-  } */
-`;
-
 const StyledLink = styled(NavLink)`
   display: block;
   color: white;
@@ -78,8 +68,14 @@ const StyledLink = styled(NavLink)`
   }
 `;
 
-const Header = () => {
+const Header = (props) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const handleLogout = (e) => {
+    e.preventDefault();
+    props.history.push('/');
+    firebase.auth().signOut();
+  };
+
   return (
     <Wrapper>
       <Grid container style={{ padding: '20px' }} justify='space-between'>
@@ -104,7 +100,11 @@ const Header = () => {
               <Typography variant='h6'>Anna Kliś</Typography>{' '}
             </Grid>
             <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-              <Button variant='contained' color='primary'>
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={handleLogout}
+              >
                 Wyloguj
               </Button>
             </Grid>
@@ -121,7 +121,7 @@ const Header = () => {
           defaultExpandIcon={<ArrowRightIcon />}
           defaultExpanded={['1']}
         >
-          <StyledTreeItem
+          <TreeItem
             nodeId='1'
             label={
               <TreeItemLabel
@@ -135,7 +135,7 @@ const Header = () => {
               </TreeItemLabel>
             }
           >
-            <StyledTreeItem
+            <TreeItem
               nodeId='2'
               label={
                 <StyledLink
@@ -152,7 +152,7 @@ const Header = () => {
                 </StyledLink>
               }
             />
-            <StyledTreeItem
+            <TreeItem
               nodeId='3'
               label={
                 <StyledLink
@@ -169,7 +169,7 @@ const Header = () => {
                 </StyledLink>
               }
             />
-            <StyledTreeItem
+            <TreeItem
               nodeId='4'
               label={
                 <StyledLink
@@ -186,8 +186,8 @@ const Header = () => {
                 </StyledLink>
               }
             />
-          </StyledTreeItem>
-          <StyledTreeItem
+          </TreeItem>
+          <TreeItem
             nodeId='5'
             label={
               <TreeItemLabel className='tree-item-label-Main'>
@@ -198,7 +198,7 @@ const Header = () => {
               </TreeItemLabel>
             }
           />
-          <StyledTreeItem
+          <TreeItem
             nodeId='6'
             label={
               <TreeItemLabel className='tree-item-label-Main'>
@@ -209,7 +209,7 @@ const Header = () => {
               </TreeItemLabel>
             }
           />
-          <StyledTreeItem
+          <TreeItem
             nodeId='7'
             label={
               <TreeItemLabel className='tree-item-label'>
@@ -224,4 +224,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default withRouter(Header);
