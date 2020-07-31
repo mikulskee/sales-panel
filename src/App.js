@@ -6,6 +6,7 @@ import CompanyState from './templates/CompanyState';
 import PersonalState from './templates/PersonalState';
 import CompanyStateMonthly from './templates/CompanyStateMonthly';
 import CompanyStateContextProvider from './contexts/CompanyStateContext';
+import MainTemplate from './templates/MainTemplate';
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <BrowserRouter>
         <Header />
         <Switch>
+          <Route path='/' exact component={MainTemplate} />
           <Route path='/personal-state' component={PersonalState} />
           <Route path='/company-state' component={CompanyState} />
           <Route
