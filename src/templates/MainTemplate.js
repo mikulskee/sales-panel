@@ -3,14 +3,18 @@ import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
 
 import LoginModal from '../components/LoginModal/LoginModal';
-import { UserContext } from '../contexts/UserContext';
+import { CompanyStateContext } from '../contexts/CompanyStateContext';
+import { UsersContext } from '../contexts/UsersContext';
+import { PersonalDataContext } from '../contexts/PersonalDataContext';
 import { CircularProgress, Grid } from '@material-ui/core';
 
 const MainTemplate = (props) => {
-  const { user, setUser } = useContext(UserContext);
+  const { setPersonalData } = useContext(PersonalDataContext);
+  const { users, setUsers } = useContext(UsersContext);
+  const { setCompanyState } = useContext(CompanyStateContext);
 
   useEffect(() => {
-    if (user) {
+    if (users) {
       props.history.push('/company-state');
     }
   });
@@ -23,16 +27,29 @@ const MainTemplate = (props) => {
         firebase
           .firestore()
           .collection(`users`)
-          .doc(`${user.uid}-name`)
           .onSnapshot((snapshot) => {
-            setUser(snapshot.data());
+            setUsers(snapshot.docs.map((doc) => doc.data()));
+          });
+
+        firebase
+          .firestore()
+          .collection(`personal-data`)
+          .doc(`${user.uid}`)
+          .onSnapshot((snapshot) => setPersonalData(snapshot.data()));
+
+        firebase
+          .firestore()
+          .collection(`company-state-general`)
+          .onSnapshot((snapshot) => {
+            setCompanyState(snapshot.docs.map((doc) => doc.data()));
           });
 
         loginModal.style.display = 'none';
       } else {
         loginModal.style.display = 'block';
         loader.style.display = 'none';
-        setUser(user);
+        setPersonalData(user);
+        setUsers(user);
       }
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

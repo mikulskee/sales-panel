@@ -13,77 +13,160 @@ import {
   IconButton,
   Divider,
   Chip,
+  Box,
 } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
-import { UserContext } from '../contexts/UserContext';
+import { UsersContext } from '../contexts/UsersContext';
+import { PersonalDataContext } from '../contexts/PersonalDataContext';
 
 const CompanyState = () => {
+  const { personalData } = useContext(PersonalDataContext);
   const { companyState } = useContext(CompanyStateContext);
-  const { user } = useContext(UserContext);
+  const { users } = useContext(UsersContext);
 
   const [overall, setOverall] = useState(null);
+  const [minusCommisions, setMinusCommisions] = useState();
+  const [plusCommisions, setPlusCommisions] = useState();
+  const [plusList, setPlusList] = useState();
+  const [minusList, setMinusList] = useState();
 
-  console.log(companyState.plus.length);
-  console.log(companyState.minus.length);
+  const findChipColor = (userInitials) => {
+    if (personalData) {
+      return users.filter((user) => user.initials === userInitials)[0].color;
+    } else {
+      return;
+    }
+  };
 
   useEffect(() => {
-    const result = companyState.plus.length - companyState.minus.length;
-
-    if (result > 0) {
-      setOverall(`+${result}`);
-    } else {
-      setOverall(`-${result}`);
+    if (companyState) {
+      setPlusCommisions(
+        companyState.filter((item) =>
+          item.plus === '' || item.plus ? item : null
+        )
+      );
+      setMinusCommisions(
+        companyState.filter((item) =>
+          item.minus === '' || item.minus ? item : null
+        )
+      );
     }
-  }, [companyState.plus.length, companyState.minus.length]);
+  }, [companyState]);
 
-  const plusList = companyState.plus.map((item, i) => {
-    return (
-      <ListItem key={i}>
-        <ListItemAvatar>
-          <Avatar>
-            <AddCircleIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={item.name} secondary={item.date} />
-        <ListItemSecondaryAction>
-          <IconButton edge='end' aria-label='create'>
-            <CreateIcon />
-          </IconButton>
-          <IconButton edge='end' aria-label='delete'>
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    );
-  });
-  const minusList = companyState.minus.map((item, i) => {
-    return (
-      <ListItem key={i}>
-        <ListItemAvatar>
-          <Avatar>
-            <RemoveCircleIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={item.name} secondary={item.date} />
-        <ListItemSecondaryAction>
-          <IconButton edge='end' aria-label='create'>
-            <CreateIcon />
-          </IconButton>
-          <IconButton edge='end' aria-label='delete'>
-            <DeleteIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>
-    );
-  });
+  useEffect(() => {
+    if (plusCommisions && minusCommisions) {
+      const result = plusCommisions.length - minusCommisions.length;
+
+      if (result > 0) {
+        setOverall(`+${result}`);
+      } else {
+        setOverall(`${result}`);
+      }
+    }
+  }, [plusCommisions, minusCommisions]);
+
+  useEffect(() => {
+    if (plusCommisions) {
+      const data = plusCommisions.map((item, i) => {
+        return (
+          <ListItem key={i}>
+            <ListItemAvatar>
+              <Avatar>
+                <AddCircleIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={item.title}
+              secondary={item.date}
+              style={{ flex: 'none', width: '25%' }}
+            />
+            <Box component='span' style={{ width: '10%' }}>
+              {item.plus ? (
+                <Chip
+                  label={item.plus}
+                  style={{ backgroundColor: '#a2ef9d' }}
+                />
+              ) : null}
+            </Box>
+            <Box component='span' style={{ width: '10%' }}>
+              {item.user ? (
+                <Chip
+                  label={item.user}
+                  style={{ backgroundColor: `${findChipColor(item.user)}` }}
+                />
+              ) : null}
+            </Box>
+
+            <ListItemSecondaryAction>
+              <IconButton edge='end' aria-label='create'>
+                <CreateIcon />
+              </IconButton>
+              <IconButton edge='end' aria-label='delete'>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        );
+      });
+
+      setPlusList(data);
+    }
+  }, [setPlusList, plusCommisions]);
+
+  useEffect(() => {
+    if (minusCommisions) {
+      const data = minusCommisions.map((item, i) => {
+        return (
+          <ListItem key={i}>
+            <ListItemAvatar>
+              <Avatar>
+                <RemoveCircleIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText
+              primary={item.title}
+              secondary={item.date}
+              style={{ flex: 'none', width: '25%' }}
+            />
+            <Box component={'span'} style={{ width: '10%' }}>
+              {item.minus ? (
+                <Chip
+                  label={item.minus}
+                  style={{ backgroundColor: '#ff9292', margin: '0 10px' }}
+                />
+              ) : null}
+            </Box>
+            <Box component='span' style={{ width: '10%' }}>
+              {item.user ? (
+                <Chip
+                  label={item.user}
+                  style={{ backgroundColor: `${findChipColor(item.user)}` }}
+                />
+              ) : null}
+            </Box>
+            <ListItemSecondaryAction>
+              <IconButton edge='end' aria-label='create'>
+                <CreateIcon />
+              </IconButton>
+              <IconButton edge='end' aria-label='delete'>
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+        );
+      });
+
+      setMinusList(data);
+    }
+  }, [setMinusList, minusCommisions]);
 
   return (
     <>
-      {user ? (
+      {users ? (
         <Grid container>
           <Typography
             variant='h4'
@@ -115,7 +198,15 @@ const CompanyState = () => {
                 elevation={3}
                 style={{ padding: '20px', backgroundColor: '#d5ffde' }}
               >
-                <Typography variant='h6'>Zlecenia pozyskane</Typography>
+                <Typography variant='h6' style={{ paddingBottom: '10px' }}>
+                  Zlecenia pozyskane
+                  {plusCommisions ? (
+                    <Chip
+                      label={plusCommisions.length}
+                      style={{ marginLeft: '10px' }}
+                    />
+                  ) : null}
+                </Typography>
                 <Divider light />
                 <List>{plusList}</List>
               </Paper>
@@ -125,7 +216,16 @@ const CompanyState = () => {
                 elevation={3}
                 style={{ padding: '20px', backgroundColor: '#ffcbcb' }}
               >
-                <Typography variant='h6'>Zlecenia utracone</Typography>
+                <Typography variant='h6' style={{ paddingBottom: '10px' }}>
+                  Zlecenia utracone
+                  {minusCommisions ? (
+                    <Chip
+                      label={minusCommisions.length}
+                      style={{ marginLeft: '10px' }}
+                    />
+                  ) : null}
+                </Typography>
+
                 <Divider light />
                 <List>{minusList}</List>
               </Paper>

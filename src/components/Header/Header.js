@@ -24,7 +24,8 @@ import {
 } from '@material-ui/core';
 import TreeView from '@material-ui/lab/TreeView';
 import TreeItem from '@material-ui/lab/TreeItem';
-import { UserContext } from '../../contexts/UserContext';
+import { UsersContext } from '../../contexts/UsersContext';
+import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 
 const Wrapper = styled.header`
   background-color: #fff;
@@ -70,19 +71,30 @@ const StyledLink = styled(NavLink)`
 `;
 
 const Header = (props) => {
-  const { user } = useContext(UserContext);
+  const { personalData } = useContext(PersonalDataContext);
+  const { users } = useContext(UsersContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const handleLogout = (e) => {
     e.preventDefault();
     props.history.push('/');
     firebase.auth().signOut();
   };
-
+  const findChipColor = (userInitials) => {
+    if (personalData) {
+      if (userInitials === 'AK') {
+        return users.filter((user) => user.initials === 'QA')[0].color;
+      } else {
+        return users.filter((user) => user.initials === userInitials)[0].color;
+      }
+    } else {
+      return;
+    }
+  };
   return (
     <Wrapper>
       <Grid container style={{ padding: '20px' }} justify='space-between'>
         <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-          {user ? (
+          {personalData ? (
             <IconButton
               onClick={() => setIsMenuOpen(true)}
               style={{ marginRight: '10px' }}
@@ -98,12 +110,29 @@ const Header = (props) => {
 
         <Grid item>
           <Grid container spacing={2}>
-            <Grid item>{user ? <Avatar>{user.initials}</Avatar> : user}</Grid>
-            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-              {user ? <Typography variant='h6'>{user.name}</Typography> : user}
+            <Grid item>
+              {personalData ? (
+                <Avatar
+                  style={{
+                    color: 'black',
+                    backgroundColor: `${findChipColor(personalData.initials)}`,
+                  }}
+                >
+                  {personalData.initials}
+                </Avatar>
+              ) : (
+                personalData
+              )}
             </Grid>
             <Grid item style={{ display: 'flex', alignItems: 'center' }}>
-              {user ? (
+              {personalData ? (
+                <Typography variant='h6'>{personalData.name}</Typography>
+              ) : (
+                personalData
+              )}
+            </Grid>
+            <Grid item style={{ display: 'flex', alignItems: 'center' }}>
+              {personalData ? (
                 <Button
                   variant='contained'
                   color='primary'
@@ -112,13 +141,13 @@ const Header = (props) => {
                   Wyloguj
                 </Button>
               ) : (
-                user
+                personalData
               )}
             </Grid>
           </Grid>
         </Grid>
       </Grid>
-      {user ? (
+      {personalData ? (
         <StyledDrawer
           anchor='left'
           open={isMenuOpen}
