@@ -14,6 +14,7 @@ import {
   Divider,
   Chip,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
@@ -26,11 +27,13 @@ const StateDashboard = (props) => {
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
   const [overall, setOverall] = useState(null);
+  const [percentage, setPercentage] = useState(null);
   const [minusCommisions, setMinusCommisions] = useState();
   const [plusCommisions, setPlusCommisions] = useState();
   const [plusList, setPlusList] = useState();
   const [minusList, setMinusList] = useState();
-  const { data, admin } = props;
+  const [companyState, setCompanyState] = useState(false);
+  const { data, admin, title, company } = props;
 
   const findChipColor = (userInitials) => {
     if (personalData) {
@@ -39,6 +42,12 @@ const StateDashboard = (props) => {
       return;
     }
   };
+
+  useEffect(() => {
+    if (company) {
+      setCompanyState(true);
+    }
+  }, [company]);
 
   useEffect(() => {
     if (data) {
@@ -76,9 +85,9 @@ const StateDashboard = (props) => {
             <ListItemText
               primary={item.title}
               secondary={item.date}
-              style={{ flex: 'none', width: '25%' }}
+              style={{ flex: 'none', width: '40%' }}
             />
-            <Box component='span' style={{ width: '10%' }}>
+            <Box component='span' style={{ width: '13%' }}>
               {item.plus ? (
                 <Chip
                   label={item.plus}
@@ -86,7 +95,7 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '10%' }}>
+            <Box component='span' style={{ width: '13%' }}>
               {item.user ? (
                 <Chip
                   label={item.user}
@@ -127,17 +136,17 @@ const StateDashboard = (props) => {
             <ListItemText
               primary={item.title}
               secondary={item.date}
-              style={{ flex: 'none', width: '25%' }}
+              style={{ flex: 'none', width: '40%' }}
             />
-            <Box component={'span'} style={{ width: '10%' }}>
+            <Box component={'span'} style={{ width: '13%' }}>
               {item.minus ? (
                 <Chip
                   label={item.minus}
-                  style={{ backgroundColor: '#ff9292', margin: '0 10px' }}
+                  style={{ backgroundColor: '#ff9292' }}
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '10%' }}>
+            <Box component='span' style={{ width: '13%' }}>
               {item.user ? (
                 <Chip
                   label={item.user}
@@ -164,10 +173,59 @@ const StateDashboard = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setMinusList, minusCommisions]);
 
+  useEffect(() => {
+    if (plusCommisions) {
+      setPercentage((plusCommisions.length / 90) * 100);
+    }
+  }, [plusCommisions]);
+
+  const CircularProgressWithLabel = (props) => {
+    return (
+      <Box
+        position='relative'
+        display='inline-flex'
+        style={{
+          margin: '16px auto',
+          left: '50%',
+          transform: 'translatex(-50%)',
+        }}
+      >
+        <CircularProgress
+          style={{ position: 'relative', color: '#cccccc' }}
+          variant='static'
+          value={100}
+          size={80}
+        />
+        <CircularProgress
+          style={{ position: 'absolute' }}
+          variant='static'
+          {...props}
+        />
+
+        <Box
+          top={0}
+          left={0}
+          bottom={0}
+          right={0}
+          position='absolute'
+          display='flex'
+          alignItems='center'
+          justifyContent='center'
+        >
+          <Typography
+            variant='caption'
+            component='div'
+            color='textSecondary'
+          >{`${Math.round(props.value)}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  };
+
   return (
     <>
       {users ? (
-        <Grid container>
+        <Grid container style={{ maxWidth: '1400px', margin: '0 auto' }}>
           <Typography
             variant='h4'
             style={{
@@ -179,21 +237,52 @@ const StateDashboard = (props) => {
               fontWeight: 'bold',
             }}
           >
-            {props.title}
-            {overall ? (
-              <Chip
-                style={{
-                  position: 'absolute',
-                  left: '105%',
-                  padding: '0 5px',
-                  backgroundColor: `${overall >= 0 ? '#d5ffde' : '#ffcbcb'}`,
-                }}
-                label={overall}
-              />
-            ) : null}
+            {title}
+            {companyState ? null : (
+              <>
+                {overall ? (
+                  <Chip
+                    style={{
+                      position: 'absolute',
+                      left: '105%',
+                      padding: '0 5px',
+                      backgroundColor: `${
+                        overall >= 0 ? '#d5ffde' : '#ffcbcb'
+                      }`,
+                    }}
+                    label={overall}
+                  />
+                ) : null}
+              </>
+            )}
           </Typography>
-          <Grid container justify='center' style={{ marginTop: '20px' }}>
-            <Grid item xs={9} style={{ margin: '10px 0', maxWidth: '1200px' }}>
+          <Grid container justify='center' style={{ margin: '20px auto' }}>
+            {companyState ? (
+              <Grid container justify='center'>
+                <Grid item xs={3} style={{ margin: '10px 5px' }}>
+                  <Paper
+                    elevation={3}
+                    style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
+                  >
+                    <Typography
+                      variant='h6'
+                      style={{ position: 'relative', paddingBottom: '10px' }}
+                    >
+                      Stan całkowity{' '}
+                      {plusCommisions ? (
+                        <Chip
+                          style={{ position: 'absolute', right: 0 }}
+                          label={`${plusCommisions.length} / 90`}
+                        />
+                      ) : null}
+                    </Typography>
+                    <Divider light />
+                    <CircularProgressWithLabel size={80} value={percentage} />
+                  </Paper>
+                </Grid>
+              </Grid>
+            ) : null}
+            <Grid item xs={5} style={{ margin: '10px 5px' }}>
               <Paper
                 elevation={3}
                 style={{ padding: '20px', backgroundColor: '#d5ffde' }}
@@ -211,7 +300,7 @@ const StateDashboard = (props) => {
                 <List>{plusList}</List>
               </Paper>
             </Grid>
-            <Grid item xs={9} style={{ margin: '10px 0', maxWidth: '1200px' }}>
+            <Grid item xs={5} style={{ margin: '10px 5px' }}>
               <Paper
                 elevation={3}
                 style={{ padding: '20px', backgroundColor: '#ffcbcb' }}

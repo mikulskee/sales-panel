@@ -25,6 +25,7 @@ const CompanyState = () => {
       title='Stan firmowy ogólny'
       data={companyState}
       admin={admin}
+      company={'true'}
     />
   );
 };
