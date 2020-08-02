@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import {
   Paper,
@@ -15,6 +15,7 @@ import {
   FormControlLabel,
   Button,
 } from '@material-ui/core';
+import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 
 const StyledForm = styled.form`
   & * {
@@ -27,20 +28,36 @@ const StyledChip = styled(Chip)`
     color: black !important;
   }
 `;
-const ClientManagment = () => {
+
+const StyledTypography = styled(Typography)`
+  width: 100%;
+  color: red !important;
+  text-align: center;
+`;
+const ClientManagment = (props) => {
   const [titleValue, setTitleValue] = useState('');
   const [dateValue, setDateValue] = useState('');
   const [minusReason, setMinusReason] = useState('');
   const [plusReason, setPlusReason] = useState('');
   const [radioValue, setRadioValue] = useState('');
+  const [errorTitle, setErrorTitle] = useState(false);
+  const [errorReason, setErrorReason] = useState(false);
+  const { admin } = props;
+  const { personalData } = useContext(PersonalDataContext);
 
   const handleTitleChange = (event) => {
+    if (errorTitle) {
+      setErrorTitle(false);
+    }
     setTitleValue(event.target.value);
   };
   const handleDateChange = (event) => {
     setDateValue(event.target.value);
   };
   const handleReasonChange = (reason) => (event) => {
+    if (errorReason) {
+      setErrorReason(false);
+    }
     if (reason) {
       setPlusReason(event.target.value);
       setMinusReason('');
@@ -51,6 +68,35 @@ const ClientManagment = () => {
   };
   const handleRadioChange = (event) => {
     setRadioValue(event.target.value);
+  };
+
+  const handleSubmit = () => {
+    if (!titleValue) {
+      setErrorTitle(true);
+    }
+    if (!minusReason && !plusReason) {
+      setErrorReason(true);
+    }
+
+    if (!errorTitle && !errorReason) {
+      if (minusReason) {
+        const data = {
+          title: titleValue,
+          date: dateValue,
+          minus: minusReason,
+          user: `${admin ? radioValue : personalData.initials}`,
+        };
+        console.log(data);
+      } else {
+        const data = {
+          title: titleValue,
+          date: dateValue,
+          plus: plusReason,
+          user: `${admin ? radioValue : personalData.initials}`,
+        };
+        console.log(data);
+      }
+    }
   };
   return (
     <Paper
@@ -80,6 +126,7 @@ const ClientManagment = () => {
                 Nazwa zlecenia
               </InputLabel>
               <OutlinedInput
+                error={errorTitle}
                 id='name'
                 label='Nazwa zlecenia'
                 variant='outlined'
@@ -89,6 +136,11 @@ const ClientManagment = () => {
                 onChange={handleTitleChange}
               />
             </FormControl>
+            {errorTitle ? (
+              <StyledTypography variant='caption' display='block' gutterBottom>
+                To pole nie może być puste
+              </StyledTypography>
+            ) : null}
           </Grid>
           <Grid item>
             <FormControl variant='outlined'>
@@ -121,6 +173,7 @@ const ClientManagment = () => {
                   <em>Powód</em>
                 </InputLabel>
                 <Select
+                  error={errorReason}
                   labelId='plus-reason'
                   id='plus'
                   value={plusReason}
@@ -149,6 +202,7 @@ const ClientManagment = () => {
                   <em>Powód</em>
                 </InputLabel>
                 <Select
+                  error={errorReason}
                   labelId='minus-reason'
                   id='minus'
                   value={minusReason}
@@ -162,60 +216,74 @@ const ClientManagment = () => {
                 </Select>
               </FormControl>
             </Grid>
+            {errorReason ? (
+              <Grid container>
+                <StyledTypography
+                  variant='caption'
+                  style={{ margin: '-15px 0 20px' }}
+                >
+                  Wybierz rodzaj zlecenia
+                </StyledTypography>
+              </Grid>
+            ) : null}
           </Grid>
-          <FormControl component='fieldset' style={{ margin: '20px 0 20px' }}>
-            <Typography
-              variant={'subtitle2'}
-              gutterBottom
-              style={{ textAlign: 'center' }}
-            >
-              Pozyskane przez
-            </Typography>
-            <RadioGroup
-              aria-label='user'
-              name='user1'
-              value={radioValue}
-              onChange={handleRadioChange}
-              style={{ flexDirection: 'row' }}
-            >
-              <FormControlLabel
-                value='QA'
-                control={<Radio />}
-                label={
-                  <StyledChip
-                    label='QA'
-                    style={{
-                      backgroundColor: '#3df4fd',
-                    }}
-                  />
-                }
-                labelPlacement='top'
-              />
-              <FormControlLabel
-                value='KK'
-                control={<Radio />}
-                label={
-                  <StyledChip
-                    label='KK'
-                    style={{ backgroundColor: '#b4f56c' }}
-                  />
-                }
-                labelPlacement='top'
-              />
-              <FormControlLabel
-                value='VF'
-                control={<Radio />}
-                label={
-                  <StyledChip
-                    label='VF'
-                    style={{ backgroundColor: '#a8b5f5' }}
-                  />
-                }
-                labelPlacement='top'
-              />
-            </RadioGroup>
-          </FormControl>
-          <Button variant='contained' color='primary'>
+
+          {admin ? (
+            <FormControl component='fieldset' style={{ margin: '20px 0 20px' }}>
+              <Typography
+                variant={'subtitle2'}
+                gutterBottom
+                style={{ textAlign: 'center' }}
+              >
+                Pozyskane przez
+              </Typography>
+              <RadioGroup
+                aria-label='user'
+                name='user1'
+                value={radioValue}
+                onChange={handleRadioChange}
+                style={{ flexDirection: 'row' }}
+              >
+                <FormControlLabel
+                  value='QA'
+                  control={<Radio />}
+                  label={
+                    <StyledChip
+                      label='QA'
+                      style={{
+                        backgroundColor: '#3df4fd',
+                      }}
+                    />
+                  }
+                  labelPlacement='top'
+                />
+                <FormControlLabel
+                  value='KK'
+                  control={<Radio />}
+                  label={
+                    <StyledChip
+                      label='KK'
+                      style={{ backgroundColor: '#b4f56c' }}
+                    />
+                  }
+                  labelPlacement='top'
+                />
+                <FormControlLabel
+                  value='VF'
+                  control={<Radio />}
+                  label={
+                    <StyledChip
+                      label='VF'
+                      style={{ backgroundColor: '#a8b5f5' }}
+                    />
+                  }
+                  labelPlacement='top'
+                />
+              </RadioGroup>
+            </FormControl>
+          ) : null}
+
+          <Button variant='contained' color='primary' onClick={handleSubmit}>
             Zatwierdź
           </Button>
         </Grid>
