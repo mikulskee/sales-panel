@@ -34,6 +34,7 @@ const StateDashboard = (props) => {
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
   const { data, admin, title, company } = props;
+  console.log(data);
 
   const findChipColor = (userInitials) => {
     if (personalData) {

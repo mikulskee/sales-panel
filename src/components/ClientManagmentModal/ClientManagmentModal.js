@@ -1,5 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
+import firebase from '../../firebase';
 import {
   Paper,
   Typography,
@@ -42,7 +43,7 @@ const ClientManagment = (props) => {
   const [radioValue, setRadioValue] = useState('');
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorReason, setErrorReason] = useState(false);
-  const { admin } = props;
+  const { admin, handleClose } = props;
   const { personalData } = useContext(PersonalDataContext);
 
   const handleTitleChange = (event) => {
@@ -71,30 +72,64 @@ const ClientManagment = (props) => {
   };
 
   const handleSubmit = () => {
+    if (!titleValue && !minusReason && !plusReason) {
+      setErrorTitle(true);
+      setErrorReason(true);
+      return;
+    }
     if (!titleValue) {
       setErrorTitle(true);
+      return;
     }
     if (!minusReason && !plusReason) {
       setErrorReason(true);
+      return;
     }
-
     if (!errorTitle && !errorReason) {
       if (minusReason) {
-        const data = {
-          title: titleValue,
-          date: dateValue,
-          minus: minusReason,
-          user: `${admin ? radioValue : personalData.initials}`,
-        };
-        console.log(data);
+        firebase
+          .firestore()
+          .collection(`personal-state-${personalData.uid}`)
+          .add({
+            title: titleValue,
+            date: dateValue,
+            minus: minusReason,
+            user: `${admin ? radioValue : personalData.initials}`,
+            timestamp: new Date().getTime(),
+          });
+        firebase
+          .firestore()
+          .collection(`company-state-general`)
+          .add({
+            title: titleValue,
+            date: dateValue,
+            minus: minusReason,
+            user: `${admin ? radioValue : personalData.initials}`,
+            timestamp: new Date().getTime(),
+          });
+        handleClose();
       } else {
-        const data = {
-          title: titleValue,
-          date: dateValue,
-          plus: plusReason,
-          user: `${admin ? radioValue : personalData.initials}`,
-        };
-        console.log(data);
+        firebase
+          .firestore()
+          .collection(`personal-state-${personalData.uid}`)
+          .add({
+            title: titleValue,
+            date: dateValue,
+            plus: `${plusReason === 'Brak' ? '' : plusReason}`,
+            user: `${admin ? radioValue : personalData.initials}`,
+            timestamp: new Date().getTime(),
+          });
+        firebase
+          .firestore()
+          .collection(`company-state-general`)
+          .add({
+            title: titleValue,
+            date: dateValue,
+            plus: `${plusReason === 'Brak' ? '' : plusReason}`,
+            user: `${admin ? radioValue : personalData.initials}`,
+            timestamp: new Date().getTime(),
+          });
+        handleClose();
       }
     }
   };

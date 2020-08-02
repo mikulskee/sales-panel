@@ -44,7 +44,7 @@ const PersonalState = () => {
         aria-labelledby='simple-dialog-title'
         open={open}
       >
-        <ClientManagmentModal admin={admin} />
+        <ClientManagmentModal admin={admin} handleClose={handleClose} />
       </Dialog>
     </>
   );
