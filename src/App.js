@@ -8,25 +8,28 @@ import CompanyStateContextProvider from './contexts/CompanyStateContext';
 import UserContextProvider from './contexts/UsersContext';
 import PersonalDataContextProvider from './contexts/PersonalDataContext';
 import Header from './components/Header/Header';
+import PersonalStateContextProvider from './contexts/PersonalStateContext';
 
 const App = () => {
   return (
     <UserContextProvider>
       <PersonalDataContextProvider>
-        <CompanyStateContextProvider>
-          <BrowserRouter>
-            <Header />
-            <Switch>
-              <Route path='/' exact component={MainTemplate} />
-              <Route path='/personal-state' component={PersonalState} />
-              <Route path='/company-state' component={CompanyState} />
-              <Route
-                path='/company-state-monthly'
-                component={CompanyStateMonthly}
-              />
-            </Switch>
-          </BrowserRouter>
-        </CompanyStateContextProvider>
+        <PersonalStateContextProvider>
+          <CompanyStateContextProvider>
+            <BrowserRouter>
+              <Header />
+              <Switch>
+                <Route path='/' exact component={MainTemplate} />
+                <Route path='/personal-state' component={PersonalState} />
+                <Route path='/company-state' component={CompanyState} />
+                <Route
+                  path='/company-state-monthly'
+                  component={CompanyStateMonthly}
+                />
+              </Switch>
+            </BrowserRouter>
+          </CompanyStateContextProvider>
+        </PersonalStateContextProvider>
       </PersonalDataContextProvider>
     </UserContextProvider>
   );

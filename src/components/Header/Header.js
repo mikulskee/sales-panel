@@ -249,10 +249,18 @@ const Header = (props) => {
             <TreeItem
               nodeId='7'
               label={
-                <TreeItemLabel className='tree-item-label'>
-                  <BuildIcon style={{ display: 'block', marginRight: '5px' }} />
-                  {'Zarządzanie klientami'}
-                </TreeItemLabel>
+                <StyledLink
+                  to='client-managment'
+                  activeClassName='active'
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <TreeItemLabel className='tree-item-label'>
+                    <BuildIcon
+                      style={{ display: 'block', marginRight: '5px' }}
+                    />
+                    {'Zarządzanie klientami'}
+                  </TreeItemLabel>
+                </StyledLink>
               }
             />
           </TreeView>

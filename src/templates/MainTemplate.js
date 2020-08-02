@@ -6,16 +6,18 @@ import LoginModal from '../components/LoginModal/LoginModal';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
 import { UsersContext } from '../contexts/UsersContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
+import { PersonalStateContext } from '../contexts/PersonalStateContext';
 import { CircularProgress, Grid } from '@material-ui/core';
 
 const MainTemplate = (props) => {
+  const { setPersonalState } = useContext(PersonalStateContext);
   const { setPersonalData } = useContext(PersonalDataContext);
   const { users, setUsers } = useContext(UsersContext);
   const { setCompanyState } = useContext(CompanyStateContext);
 
   useEffect(() => {
     if (users) {
-      props.history.push('/company-state');
+      props.history.push('/personal-state');
     }
   });
 
@@ -43,11 +45,18 @@ const MainTemplate = (props) => {
           .onSnapshot((snapshot) => {
             setCompanyState(snapshot.docs.map((doc) => doc.data()));
           });
+        firebase
+          .firestore()
+          .collection(`personal-state-${user.uid}`)
+          .onSnapshot((snapshot) => {
+            setPersonalState(snapshot.docs.map((doc) => doc.data()));
+          });
 
         loginModal.style.display = 'none';
       } else {
         loginModal.style.display = 'block';
         loader.style.display = 'none';
+        setPersonalState(user);
         setPersonalData(user);
         setUsers(user);
       }
