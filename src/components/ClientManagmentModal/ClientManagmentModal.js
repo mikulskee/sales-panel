@@ -56,6 +56,8 @@ const ClientManagment = (props) => {
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
 
+  console.log(personalData);
+
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
   };
@@ -103,22 +105,26 @@ const ClientManagment = (props) => {
     if (!errorTitle && !errorReason) {
       if (minusReason) {
         if (!oldCommision) {
-          firebase
-            .firestore()
-            .collection(
-              `personal-state-${
-                admin
-                  ? users.filter((item) => item.initials === radioValue)[0].uid
-                  : personalData.uid
-              }`
-            )
-            .add({
-              title: titleValue,
-              date: dateValue,
-              minus: minusReason,
-              user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
-            });
+          if (!radioValue) {
+          } else {
+            firebase
+              .firestore()
+              .collection(
+                `personal-state-${
+                  admin
+                    ? users.filter((item) => item.initials === radioValue)[0]
+                        .uid
+                    : personalData.uid
+                }`
+              )
+              .add({
+                title: titleValue,
+                date: dateValue,
+                minus: minusReason,
+                user: `${admin ? radioValue : personalData.initials}`,
+                timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+              });
+          }
         }
 
         firebase
@@ -134,22 +140,26 @@ const ClientManagment = (props) => {
         handleClose();
       } else {
         if (!oldCommision) {
-          firebase
-            .firestore()
-            .collection(
-              `personal-state-${
-                admin
-                  ? users.filter((item) => item.initials === radioValue)[0].uid
-                  : personalData.uid
-              }`
-            )
-            .add({
-              title: titleValue,
-              date: dateValue,
-              plus: `${plusReason === 'Brak' ? '' : plusReason}`,
-              user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
-            });
+          if (!radioValue) {
+          } else {
+            firebase
+              .firestore()
+              .collection(
+                `personal-state-${
+                  admin
+                    ? users.filter((item) => item.initials === radioValue)[0]
+                        .uid
+                    : personalData.uid
+                }`
+              )
+              .add({
+                title: titleValue,
+                date: dateValue,
+                plus: `${plusReason === 'Brak' ? '' : plusReason}`,
+                user: `${admin ? radioValue : personalData.initials}`,
+                timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+              });
+          }
         }
         firebase
           .firestore()
