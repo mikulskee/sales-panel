@@ -34,7 +34,6 @@ const StateDashboard = (props) => {
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
   const { data, admin, title, company } = props;
-  console.log(data);
 
   const findChipColor = (userInitials) => {
     if (personalData) {
@@ -104,6 +103,14 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
+            <Box component='span' style={{ width: '13%' }}>
+              {item.timestamp ? (
+                <Chip
+                  label={'OLD'}
+                  style={{ backgroundColor: `#252c61`, color: 'white' }}
+                />
+              ) : null}
+            </Box>
 
             {admin ? (
               <ListItemSecondaryAction>
@@ -152,6 +159,14 @@ const StateDashboard = (props) => {
                 <Chip
                   label={item.user}
                   style={{ backgroundColor: `${findChipColor(item.user)}` }}
+                />
+              ) : null}
+            </Box>
+            <Box component='span' style={{ width: '13%' }}>
+              {item.timestamp ? (
+                <Chip
+                  label={'OLD'}
+                  style={{ backgroundColor: `#252c61`, color: 'white' }}
                 />
               ) : null}
             </Box>
@@ -234,7 +249,7 @@ const StateDashboard = (props) => {
               textAlign: 'center',
               margin: '0 auto',
               marginTop: '20px',
-              color: '#3c3c3c',
+              color: 'white',
               fontWeight: 'bold',
             }}
           >

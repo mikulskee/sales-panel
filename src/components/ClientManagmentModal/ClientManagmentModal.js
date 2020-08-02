@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import firebase from '../../firebase';
 import {
@@ -15,8 +15,11 @@ import {
   Radio,
   FormControlLabel,
   Button,
+  Checkbox,
+  Divider,
 } from '@material-ui/core';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
+import { UsersContext } from '../../contexts/UsersContext';
 
 const StyledForm = styled.form`
   & * {
@@ -35,6 +38,11 @@ const StyledTypography = styled(Typography)`
   color: red !important;
   text-align: center;
 `;
+
+const StyledDivider = styled(Divider)`
+  background-color: #5f5f5f !important;
+  width: 100%;
+`;
 const ClientManagment = (props) => {
   const [titleValue, setTitleValue] = useState('');
   const [dateValue, setDateValue] = useState('');
@@ -43,8 +51,14 @@ const ClientManagment = (props) => {
   const [radioValue, setRadioValue] = useState('');
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorReason, setErrorReason] = useState(false);
+  const [oldCommision, setOldCommision] = useState(false);
   const { admin, handleClose } = props;
   const { personalData } = useContext(PersonalDataContext);
+  const { users } = useContext(UsersContext);
+
+  const handleCheckboxChange = (event) => {
+    setOldCommision(event.target.checked);
+  };
 
   const handleTitleChange = (event) => {
     if (errorTitle) {
@@ -72,6 +86,7 @@ const ClientManagment = (props) => {
   };
 
   const handleSubmit = () => {
+    console.log(oldCommision);
     if (!titleValue && !minusReason && !plusReason) {
       setErrorTitle(true);
       setErrorReason(true);
@@ -87,16 +102,25 @@ const ClientManagment = (props) => {
     }
     if (!errorTitle && !errorReason) {
       if (minusReason) {
-        firebase
-          .firestore()
-          .collection(`personal-state-${personalData.uid}`)
-          .add({
-            title: titleValue,
-            date: dateValue,
-            minus: minusReason,
-            user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: new Date().getTime(),
-          });
+        if (!oldCommision) {
+          firebase
+            .firestore()
+            .collection(
+              `personal-state-${
+                admin
+                  ? users.filter((item) => item.initials === radioValue)[0].uid
+                  : personalData.uid
+              }`
+            )
+            .add({
+              title: titleValue,
+              date: dateValue,
+              minus: minusReason,
+              user: `${admin ? radioValue : personalData.initials}`,
+              timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+            });
+        }
+
         firebase
           .firestore()
           .collection(`company-state-general`)
@@ -105,20 +129,28 @@ const ClientManagment = (props) => {
             date: dateValue,
             minus: minusReason,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: new Date().getTime(),
+            timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
           });
         handleClose();
       } else {
-        firebase
-          .firestore()
-          .collection(`personal-state-${personalData.uid}`)
-          .add({
-            title: titleValue,
-            date: dateValue,
-            plus: `${plusReason === 'Brak' ? '' : plusReason}`,
-            user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: new Date().getTime(),
-          });
+        if (!oldCommision) {
+          firebase
+            .firestore()
+            .collection(
+              `personal-state-${
+                admin
+                  ? users.filter((item) => item.initials === radioValue)[0].uid
+                  : personalData.uid
+              }`
+            )
+            .add({
+              title: titleValue,
+              date: dateValue,
+              plus: `${plusReason === 'Brak' ? '' : plusReason}`,
+              user: `${admin ? radioValue : personalData.initials}`,
+              timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+            });
+        }
         firebase
           .firestore()
           .collection(`company-state-general`)
@@ -127,7 +159,7 @@ const ClientManagment = (props) => {
             date: dateValue,
             plus: `${plusReason === 'Brak' ? '' : plusReason}`,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: new Date().getTime(),
+            timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
           });
         handleClose();
       }
@@ -146,6 +178,7 @@ const ClientManagment = (props) => {
       <Typography variant={'h6'} gutterBottom style={{ textAlign: 'center' }}>
         Zarządzanie klientami
       </Typography>
+      <StyledDivider />
 
       <StyledForm style={{ marginTop: '20px' }}>
         <Grid
@@ -190,7 +223,24 @@ const ClientManagment = (props) => {
               />
             </FormControl>
           </Grid>
-
+          {admin ? (
+            <>
+              <StyledDivider />
+              <FormControlLabel
+                style={{ margin: '20px 0' }}
+                control={
+                  <Checkbox
+                    checked={oldCommision}
+                    onChange={handleCheckboxChange}
+                    name='oldCommision'
+                    color='primary'
+                  />
+                }
+                label='Zlecenie istniejące'
+              />
+            </>
+          ) : null}
+          <StyledDivider />
           <Grid container justify='center'>
             <Grid
               item
@@ -262,63 +312,75 @@ const ClientManagment = (props) => {
               </Grid>
             ) : null}
           </Grid>
+          <StyledDivider />
 
           {admin ? (
-            <FormControl component='fieldset' style={{ margin: '20px 0 20px' }}>
-              <Typography
-                variant={'subtitle2'}
-                gutterBottom
-                style={{ textAlign: 'center' }}
+            <>
+              <FormControl
+                component='fieldset'
+                style={{ margin: '20px 0 20px' }}
               >
-                Pozyskane przez
-              </Typography>
-              <RadioGroup
-                aria-label='user'
-                name='user1'
-                value={radioValue}
-                onChange={handleRadioChange}
-                style={{ flexDirection: 'row' }}
-              >
-                <FormControlLabel
-                  value='QA'
-                  control={<Radio />}
-                  label={
-                    <StyledChip
-                      label='QA'
-                      style={{
-                        backgroundColor: '#3df4fd',
-                      }}
-                    />
-                  }
-                  labelPlacement='top'
-                />
-                <FormControlLabel
-                  value='KK'
-                  control={<Radio />}
-                  label={
-                    <StyledChip
-                      label='KK'
-                      style={{ backgroundColor: '#b4f56c' }}
-                    />
-                  }
-                  labelPlacement='top'
-                />
-                <FormControlLabel
-                  value='VF'
-                  control={<Radio />}
-                  label={
-                    <StyledChip
-                      label='VF'
-                      style={{ backgroundColor: '#a8b5f5' }}
-                    />
-                  }
-                  labelPlacement='top'
-                />
-              </RadioGroup>
-            </FormControl>
+                <Typography
+                  variant={'subtitle2'}
+                  gutterBottom
+                  style={{ textAlign: 'center' }}
+                >
+                  Pozyskane przez
+                </Typography>
+                <RadioGroup
+                  aria-label='user'
+                  name='user1'
+                  value={radioValue}
+                  onChange={handleRadioChange}
+                  style={{ flexDirection: 'row' }}
+                >
+                  <FormControlLabel
+                    value='QA'
+                    control={<Radio />}
+                    label={
+                      <StyledChip
+                        label='QA'
+                        style={{
+                          backgroundColor: '#3df4fd',
+                        }}
+                      />
+                    }
+                    labelPlacement='top'
+                  />
+                  <FormControlLabel
+                    value='KK'
+                    control={<Radio />}
+                    label={
+                      <StyledChip
+                        label='KK'
+                        style={{ backgroundColor: '#b4f56c' }}
+                      />
+                    }
+                    labelPlacement='top'
+                  />
+                  <FormControlLabel
+                    value='VF'
+                    control={<Radio />}
+                    label={
+                      <StyledChip
+                        label='VF'
+                        style={{ backgroundColor: '#a8b5f5' }}
+                      />
+                    }
+                    labelPlacement='top'
+                  />
+                </RadioGroup>
+              </FormControl>
+              <StyledDivider />
+            </>
           ) : null}
 
-          <Button variant='contained' color='primary' onClick={handleSubmit}>
+          <Button
+            style={{ margin: '20px 0' }}
+            variant='contained'
+            color='primary'
+            onClick={handleSubmit}
+          >
             Zatwierdź
           </Button>
         </Grid>
