@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import {
   Paper,
   Typography,
@@ -14,6 +15,18 @@ import {
   FormControlLabel,
   Button,
 } from '@material-ui/core';
+
+const StyledForm = styled.form`
+  & * {
+    color: white !important;
+  }
+`;
+
+const StyledChip = styled(Chip)`
+  span {
+    color: black !important;
+  }
+`;
 const ClientManagment = () => {
   const [titleValue, setTitleValue] = useState('');
   const [dateValue, setDateValue] = useState('');
@@ -41,14 +54,19 @@ const ClientManagment = () => {
   };
   return (
     <Paper
-      style={{ width: '500px', margin: '60px auto', padding: '20px' }}
+      style={{
+        width: '500px',
+        padding: '50px',
+        backgroundColor: '#383838',
+        color: '#fff',
+      }}
       elevation={3}
     >
       <Typography variant={'h6'} gutterBottom style={{ textAlign: 'center' }}>
         Zarządzanie klientami
       </Typography>
 
-      <form style={{ marginTop: '20px' }}>
+      <StyledForm style={{ marginTop: '20px' }}>
         <Grid
           container
           direction='column'
@@ -58,7 +76,9 @@ const ClientManagment = () => {
         >
           <Grid item>
             <FormControl variant='outlined'>
-              <InputLabel htmlFor='name'>Nazwa zlecenia</InputLabel>
+              <InputLabel htmlFor='name' style={{ color: '#fff' }}>
+                Nazwa zlecenia
+              </InputLabel>
               <OutlinedInput
                 id='name'
                 label='Nazwa zlecenia'
@@ -84,8 +104,11 @@ const ClientManagment = () => {
             </FormControl>
           </Grid>
 
-          <Grid container justify='center' spacing={4}>
-            <Grid item style={{ textAlign: 'center' }}>
+          <Grid container justify='center'>
+            <Grid
+              item
+              style={{ textAlign: 'center', margin: '20px 20px 20px 0' }}
+            >
               <Typography
                 variant={'subtitle2'}
                 gutterBottom
@@ -94,7 +117,9 @@ const ClientManagment = () => {
                 Zlecenie pozyskane
               </Typography>
               <FormControl variant='outlined' style={{ width: '100px' }}>
-                <InputLabel id='plus-reason'>Powód</InputLabel>
+                <InputLabel id='plus-reason'>
+                  <em>Powód</em>
+                </InputLabel>
                 <Select
                   labelId='plus-reason'
                   id='plus'
@@ -108,7 +133,10 @@ const ClientManagment = () => {
                 </Select>
               </FormControl>
             </Grid>
-            <Grid item style={{ textAlign: 'center' }}>
+            <Grid
+              item
+              style={{ textAlign: 'center', margin: '20px 0 20px 20px' }}
+            >
               <Typography
                 variant={'subtitle2'}
                 gutterBottom
@@ -117,7 +145,9 @@ const ClientManagment = () => {
                 Zlecenie utracone
               </Typography>
               <FormControl variant='outlined' style={{ width: '100px' }}>
-                <InputLabel id='minus-reason'>Powód</InputLabel>
+                <InputLabel id='minus-reason'>
+                  <em>Powód</em>
+                </InputLabel>
                 <Select
                   labelId='minus-reason'
                   id='minus'
@@ -133,7 +163,7 @@ const ClientManagment = () => {
               </FormControl>
             </Grid>
           </Grid>
-          <FormControl component='fieldset'>
+          <FormControl component='fieldset' style={{ margin: '20px 0 20px' }}>
             <Typography
               variant={'subtitle2'}
               gutterBottom
@@ -152,7 +182,12 @@ const ClientManagment = () => {
                 value='QA'
                 control={<Radio />}
                 label={
-                  <Chip label='QA' style={{ backgroundColor: '#3df4fd' }} />
+                  <StyledChip
+                    label='QA'
+                    style={{
+                      backgroundColor: '#3df4fd',
+                    }}
+                  />
                 }
                 labelPlacement='top'
               />
@@ -160,7 +195,10 @@ const ClientManagment = () => {
                 value='KK'
                 control={<Radio />}
                 label={
-                  <Chip label='KK' style={{ backgroundColor: '#b4f56c' }} />
+                  <StyledChip
+                    label='KK'
+                    style={{ backgroundColor: '#b4f56c' }}
+                  />
                 }
                 labelPlacement='top'
               />
@@ -168,7 +206,10 @@ const ClientManagment = () => {
                 value='VF'
                 control={<Radio />}
                 label={
-                  <Chip label='VF' style={{ backgroundColor: '#a8b5f5' }} />
+                  <StyledChip
+                    label='VF'
+                    style={{ backgroundColor: '#a8b5f5' }}
+                  />
                 }
                 labelPlacement='top'
               />
@@ -178,7 +219,7 @@ const ClientManagment = () => {
             Zatwierdź
           </Button>
         </Grid>
-      </form>
+      </StyledForm>
     </Paper>
   );
 };

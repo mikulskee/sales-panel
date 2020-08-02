@@ -17,7 +17,7 @@ const MainTemplate = (props) => {
 
   useEffect(() => {
     if (users) {
-      props.history.push('/company-state');
+      props.history.push('/personal-state');
     }
   });
 
