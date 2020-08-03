@@ -291,7 +291,12 @@ const StateDashboard = (props) => {
   return (
     <>
       {users ? (
-        <Grid container style={{ maxWidth: '1400px', margin: '0 auto' }}>
+        <Grid
+          container
+          item
+          xl={5}
+          style={{ maxWidth: '1400px', margin: '0 auto' }}
+        >
           <Typography
             variant='h4'
             style={{
@@ -325,7 +330,7 @@ const StateDashboard = (props) => {
           <Grid container justify='center' style={{ margin: '20px auto' }}>
             {companyState ? (
               <Grid container justify='center'>
-                <Grid item xs={3} style={{ margin: '10px 5px' }}>
+                <Grid item xs={3} lg={5} style={{ margin: '10px 5px' }}>
                   <Paper
                     elevation={3}
                     style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
@@ -348,7 +353,12 @@ const StateDashboard = (props) => {
                 </Grid>
               </Grid>
             ) : null}
-            <Grid item xs={11} md={5} style={{ margin: '10px 5px' }}>
+            <Grid
+              item
+              xs={11}
+              xl={companyState ? 6 : 11}
+              style={{ margin: '10px 5px' }}
+            >
               <Paper
                 elevation={3}
                 style={{ padding: '20px 0', backgroundColor: '#d5ffde' }}
@@ -366,7 +376,12 @@ const StateDashboard = (props) => {
                 <List>{plusList}</List>
               </Paper>
             </Grid>
-            <Grid item xs={11} md={5} style={{ margin: '10px 5px' }}>
+            <Grid
+              item
+              xs={11}
+              xl={companyState ? 5 : 11}
+              style={{ margin: '10px 5px' }}
+            >
               <Paper
                 elevation={3}
                 style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}

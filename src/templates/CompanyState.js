@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import StateDashboard from '../components/StateDashboard/StateDashboard';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
-import { Paper } from '@material-ui/core';
+import { Paper, Grid } from '@material-ui/core';
 
 const CompanyState = () => {
   const [admin, setAdmin] = useState('');
@@ -20,17 +20,24 @@ const CompanyState = () => {
   }, [personalData]);
 
   return (
-    <Paper
-      elevation={3}
-      style={{ backgroundColor: '#4f6984', width: '80%', margin: '20px auto' }}
-    >
-      <StateDashboard
-        title='Stan firmowy ogólny'
-        data={companyState}
-        admin={admin}
-        company={'true'}
-      />
-    </Paper>
+    <Grid container item lg={7} style={{ margin: '0 auto' }}>
+      <Paper
+        elevation={3}
+        style={{
+          height: 'fit-content',
+          backgroundColor: '#4f6984',
+          width: '100%',
+          margin: '20px auto',
+        }}
+      >
+        <StateDashboard
+          title='Stan firmowy ogólny'
+          data={companyState}
+          admin={admin}
+          company={'true'}
+        />
+      </Paper>
+    </Grid>
   );
 };
 
