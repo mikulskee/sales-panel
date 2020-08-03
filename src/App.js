@@ -9,6 +9,7 @@ import UserContextProvider from './contexts/UsersContext';
 import PersonalDataContextProvider from './contexts/PersonalDataContext';
 import Header from './components/Header/Header';
 import PersonalStateContextProvider from './contexts/PersonalStateContext';
+import MainDashboard from './templates/MainDashboard';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
               <Header />
               <Switch>
                 <Route path='/' exact component={MainTemplate} />
+                <Route path='/dashboard' component={MainDashboard} />
                 <Route path='/personal-state' component={PersonalState} />
                 <Route path='/company-state' component={CompanyState} />
                 <Route

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import firebase from '../../firebase';
+import firebase from '../../../firebase';
 import moment from 'moment';
 import 'moment/locale/pl';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,8 +21,8 @@ import {
   Checkbox,
   Divider,
 } from '@material-ui/core';
-import { PersonalDataContext } from '../../contexts/PersonalDataContext';
-import { UsersContext } from '../../contexts/UsersContext';
+import { PersonalDataContext } from '../../../contexts/PersonalDataContext';
+import { UsersContext } from '../../../contexts/UsersContext';
 
 const StyledForm = styled.form`
   & * {

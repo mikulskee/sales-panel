@@ -11,7 +11,7 @@ const Tooltips = () => {
       style={{
         position: 'fixed',
         bottom: '60px',
-        right: '60px',
+        right: '40px',
         display: 'flex',
         flexDirection: 'column',
       }}

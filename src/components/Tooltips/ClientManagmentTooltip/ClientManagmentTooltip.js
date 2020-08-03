@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { Tooltip, Typography, Fab, Dialog } from '@material-ui/core';
-import ClientManagmentModal from '../../ClientManagmentModal/ClientManagmentModal';
+import ClientManagmentModal from '../../Modals/ClientManagmentModal/ClientManagmentModal';
 import AddIcon from '@material-ui/icons/Add';
 import { PersonalDataContext } from '../../../contexts/PersonalDataContext';
 

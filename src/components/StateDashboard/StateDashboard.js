@@ -114,9 +114,14 @@ const StateDashboard = (props) => {
             <ListItemText
               primary={item.title}
               secondary={item.date}
-              style={{ flex: 'none', width: '40%' }}
+              style={{
+                flex: 'none',
+                width: '28%',
+                marginRight: '10px',
+                overflow: 'hidden',
+              }}
             />
-            <Box component='span' style={{ width: '13%' }}>
+            <Box component='span' style={{ width: '13%', textAlign: 'center' }}>
               {item.plus ? (
                 <Chip
                   label={item.plus}
@@ -124,7 +129,7 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '13%' }}>
+            <Box component='span' style={{ width: '14%', textAlign: 'center' }}>
               {item.user ? (
                 <Chip
                   label={item.user}
@@ -132,7 +137,7 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '13%' }}>
+            <Box component='span' style={{ width: '14%', textAlign: 'center' }}>
               {item.timestamp ? null : (
                 <Chip
                   label={'OLD'}
@@ -177,9 +182,17 @@ const StateDashboard = (props) => {
             <ListItemText
               primary={item.title}
               secondary={item.date}
-              style={{ flex: 'none', width: '40%' }}
+              style={{
+                flex: 'none',
+                width: '28%',
+                marginRight: '10px',
+                overflow: 'hidden',
+              }}
             />
-            <Box component={'span'} style={{ width: '13%' }}>
+            <Box
+              component={'span'}
+              style={{ width: '18%', textAlign: 'center' }}
+            >
               {item.minus ? (
                 <Chip
                   label={item.minus}
@@ -187,7 +200,7 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '13%' }}>
+            <Box component='span' style={{ width: '12%', textAlign: 'center' }}>
               {item.user ? (
                 <Chip
                   label={item.user}
@@ -195,7 +208,7 @@ const StateDashboard = (props) => {
                 />
               ) : null}
             </Box>
-            <Box component='span' style={{ width: '13%' }}>
+            <Box component='span' style={{ width: '18%', textAlign: 'center' }}>
               {item.timestamp ? null : (
                 <Chip
                   label={'OLD'}
@@ -335,12 +348,12 @@ const StateDashboard = (props) => {
                 </Grid>
               </Grid>
             ) : null}
-            <Grid item xs={5} style={{ margin: '10px 5px' }}>
+            <Grid item xs={11} md={5} style={{ margin: '10px 5px' }}>
               <Paper
                 elevation={3}
-                style={{ padding: '20px', backgroundColor: '#d5ffde' }}
+                style={{ padding: '20px 0', backgroundColor: '#d5ffde' }}
               >
-                <Typography variant='h6' style={{ paddingBottom: '10px' }}>
+                <Typography variant='h6' style={{ padding: '10px 20px' }}>
                   Zlecenia pozyskane
                   {plusCommisions ? (
                     <Chip
@@ -353,12 +366,12 @@ const StateDashboard = (props) => {
                 <List>{plusList}</List>
               </Paper>
             </Grid>
-            <Grid item xs={5} style={{ margin: '10px 5px' }}>
+            <Grid item xs={11} md={5} style={{ margin: '10px 5px' }}>
               <Paper
                 elevation={3}
-                style={{ padding: '20px', backgroundColor: '#ffcbcb' }}
+                style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}
               >
-                <Typography variant='h6' style={{ paddingBottom: '10px' }}>
+                <Typography variant='h6' style={{ padding: '10px 20px' }}>
                   Zlecenia utracone
                   {minusCommisions ? (
                     <Chip

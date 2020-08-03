@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import firebase from '../firebase';
 import { withRouter } from 'react-router-dom';
 
-import LoginModal from '../components/LoginModal/LoginModal';
+import LoginModal from '../components/Modals/LoginModal/LoginModal';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
 import { UsersContext } from '../contexts/UsersContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
@@ -17,7 +17,7 @@ const MainTemplate = (props) => {
 
   useEffect(() => {
     if (users) {
-      props.history.push('/personal-state');
+      props.history.push('/dashboard');
     }
   });
 
