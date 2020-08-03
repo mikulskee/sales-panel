@@ -1,6 +1,9 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import firebase from '../../firebase';
+import moment from 'moment';
+import 'moment/locale/pl';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Paper,
   Typography,
@@ -56,8 +59,6 @@ const ClientManagment = (props) => {
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
 
-  console.log(personalData);
-
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
   };
@@ -88,7 +89,6 @@ const ClientManagment = (props) => {
   };
 
   const handleSubmit = () => {
-    console.log(oldCommision);
     if (!titleValue && !minusReason && !plusReason) {
       setErrorTitle(true);
       setErrorReason(true);
@@ -102,74 +102,82 @@ const ClientManagment = (props) => {
       setErrorReason(true);
       return;
     }
+
     if (!errorTitle && !errorReason) {
       if (minusReason) {
+        const id = uuidv4();
         if (!oldCommision) {
-          if (!radioValue) {
-          } else {
-            firebase
-              .firestore()
-              .collection(
-                `personal-state-${
-                  admin
-                    ? users.filter((item) => item.initials === radioValue)[0]
-                        .uid
-                    : personalData.uid
-                }`
-              )
-              .add({
-                title: titleValue,
-                date: dateValue,
-                minus: minusReason,
-                user: `${admin ? radioValue : personalData.initials}`,
-                timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
-              });
-          }
+          firebase
+            .firestore()
+            .collection(
+              `personal-state-${
+                admin
+                  ? users.filter((item) => item.initials === radioValue)[0].uid
+                  : personalData.uid
+              }`
+            )
+            .doc(id)
+            .set({
+              title: titleValue,
+              date: dateValue,
+              minus: minusReason,
+              user: `${admin ? radioValue : personalData.initials}`,
+              timestamp: moment(new Date()).format('L').slice(3),
+              id,
+            });
         }
 
         firebase
           .firestore()
           .collection(`company-state-general`)
-          .add({
+          .doc(id)
+          .set({
             title: titleValue,
             date: dateValue,
             minus: minusReason,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+            timestamp: `${
+              oldCommision ? '' : moment(new Date()).format('L').slice(3)
+            }`,
+            id,
           });
+
         handleClose();
       } else {
+        const id = uuidv4();
         if (!oldCommision) {
-          if (!radioValue) {
-          } else {
-            firebase
-              .firestore()
-              .collection(
-                `personal-state-${
-                  admin
-                    ? users.filter((item) => item.initials === radioValue)[0]
-                        .uid
-                    : personalData.uid
-                }`
-              )
-              .add({
-                title: titleValue,
-                date: dateValue,
-                plus: `${plusReason === 'Brak' ? '' : plusReason}`,
-                user: `${admin ? radioValue : personalData.initials}`,
-                timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
-              });
-          }
+          firebase
+            .firestore()
+            .collection(
+              `personal-state-${
+                admin
+                  ? users.filter((item) => item.initials === radioValue)[0].uid
+                  : personalData.uid
+              }`
+            )
+            .doc(id)
+            .set({
+              title: titleValue,
+              date: dateValue,
+              plus: `${plusReason === 'Brak' ? '' : plusReason}`,
+              user: `${admin ? radioValue : personalData.initials}`,
+              timestamp: moment(new Date()).format('L').slice(3),
+              id,
+            });
         }
         firebase
           .firestore()
           .collection(`company-state-general`)
-          .add({
+          .doc(id)
+          .set({
             title: titleValue,
             date: dateValue,
             plus: `${plusReason === 'Brak' ? '' : plusReason}`,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: `${!oldCommision ? '' : new Date().getTime()}`,
+            timestamp: `${
+              oldCommision ? '' : moment(new Date()).format('L').slice(3)
+            }`,
+            id,
           });
         handleClose();
       }

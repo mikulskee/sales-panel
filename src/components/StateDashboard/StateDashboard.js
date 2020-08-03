@@ -1,5 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
+import firebase from '../../firebase';
+// import moment from 'moment';
+// import 'moment/locale/pl';
 import {
   Typography,
   Paper,
@@ -34,6 +37,32 @@ const StateDashboard = (props) => {
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
   const { data, admin, title, company } = props;
+
+  const handleDeleteData = (item) => (event) => {
+    if (item.timestamp) {
+      firebase
+        .firestore()
+        .collection(
+          `personal-state-${
+            users.filter((i) => i.initials === item.user)[0].uid
+          }`
+        )
+        .doc(item.id)
+        .delete()
+        .then(() => {
+          console.log('usunięto');
+        });
+    }
+
+    firebase
+      .firestore()
+      .collection('company-state-general')
+      .doc(item.id)
+      .delete()
+      .then(() => {
+        console.log('usunięto');
+      });
+  };
 
   const findChipColor = (userInitials) => {
     if (personalData) {
@@ -104,12 +133,12 @@ const StateDashboard = (props) => {
               ) : null}
             </Box>
             <Box component='span' style={{ width: '13%' }}>
-              {item.timestamp ? (
+              {item.timestamp ? null : (
                 <Chip
                   label={'OLD'}
                   style={{ backgroundColor: `#252c61`, color: 'white' }}
                 />
-              ) : null}
+              )}
             </Box>
 
             {admin ? (
@@ -117,7 +146,11 @@ const StateDashboard = (props) => {
                 <IconButton edge='end' aria-label='create'>
                   <CreateIcon />
                 </IconButton>
-                <IconButton edge='end' aria-label='delete'>
+                <IconButton
+                  edge='end'
+                  aria-label='delete'
+                  onClick={handleDeleteData(item)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>
@@ -163,19 +196,23 @@ const StateDashboard = (props) => {
               ) : null}
             </Box>
             <Box component='span' style={{ width: '13%' }}>
-              {item.timestamp ? (
+              {item.timestamp ? null : (
                 <Chip
                   label={'OLD'}
                   style={{ backgroundColor: `#252c61`, color: 'white' }}
                 />
-              ) : null}
+              )}
             </Box>
             {admin ? (
               <ListItemSecondaryAction>
                 <IconButton edge='end' aria-label='create'>
                   <CreateIcon />
                 </IconButton>
-                <IconButton edge='end' aria-label='delete'>
+                <IconButton
+                  edge='end'
+                  aria-label='delete'
+                  onClick={handleDeleteData(item)}
+                >
                   <DeleteIcon />
                 </IconButton>
               </ListItemSecondaryAction>
