@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import firebase from '../../../firebase';
 import moment from 'moment';
@@ -56,10 +56,37 @@ const ClientManagment = (props) => {
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorReason, setErrorReason] = useState(false);
   const [oldCommision, setOldCommision] = useState(false);
-  const { admin, handleClose } = props;
+  const { admin, handleClose, dataToEdit, setEditDialogVisible } = props;
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
   const { setSuccessSnackbarOpen } = useContext(AppContext);
+
+  useEffect(() => {
+    if (dataToEdit) {
+      setTitleValue(dataToEdit.title);
+      setDateValue(dataToEdit.date);
+      setRadioValue(dataToEdit.user);
+      if (dataToEdit.timestamp) {
+        setOldCommision(false);
+      } else {
+        setOldCommision(true);
+      }
+      if (typeof dataToEdit.plus === 'string') {
+        console.log('plus');
+        if (dataToEdit.plus === '') {
+          setPlusReason('Brak');
+        } else {
+          setPlusReason(dataToEdit.plus);
+        }
+      } else {
+        if (dataToEdit.minus === '') {
+          setMinusReason('Brak');
+        } else {
+          setMinusReason(dataToEdit.minus);
+        }
+      }
+    }
+  }, [dataToEdit]);
 
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
@@ -90,6 +117,13 @@ const ClientManagment = (props) => {
     setRadioValue(event.target.value);
   };
 
+  const setTimestamp = () => {
+    if (oldCommision) {
+      return '';
+    } else {
+      return moment(new Date()).format('L').slice(3);
+    }
+  };
   const handleSubmit = () => {
     if (!titleValue && !minusReason && !plusReason) {
       setErrorTitle(true);
@@ -124,7 +158,7 @@ const ClientManagment = (props) => {
               date: dateValue,
               minus: minusReason,
               user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: moment(new Date()).format('L').slice(3),
+              timestamp: setTimestamp(),
               id,
             })
             .then(() => setSuccessSnackbarOpen(true))
@@ -140,9 +174,7 @@ const ClientManagment = (props) => {
             date: dateValue,
             minus: minusReason,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: `${
-              oldCommision ? '' : moment(new Date()).format('L').slice(3)
-            }`,
+            timestamp: setTimestamp(),
             id,
           })
           .then(() => setSuccessSnackbarOpen(true))
@@ -167,7 +199,7 @@ const ClientManagment = (props) => {
               date: dateValue,
               plus: `${plusReason === 'Brak' ? '' : plusReason}`,
               user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: moment(new Date()).format('L').slice(3),
+              timestamp: setTimestamp(),
               id,
             })
             .then(() => setSuccessSnackbarOpen(true))
@@ -182,9 +214,7 @@ const ClientManagment = (props) => {
             date: dateValue,
             plus: `${plusReason === 'Brak' ? '' : plusReason}`,
             user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: `${
-              oldCommision ? '' : moment(new Date()).format('L').slice(3)
-            }`,
+            timestamp: setTimestamp(),
             id,
           })
           .then(() => setSuccessSnackbarOpen(true))
@@ -278,7 +308,9 @@ const ClientManagment = (props) => {
               <Typography
                 variant={'subtitle2'}
                 gutterBottom
-                style={{ textAlign: 'center' }}
+                style={{
+                  textAlign: 'center',
+                }}
               >
                 Zlecenie pozyskane
               </Typography>
@@ -321,7 +353,7 @@ const ClientManagment = (props) => {
                   id='minus'
                   value={minusReason}
                   onChange={handleReasonChange('')}
-                  label='Age'
+                  label='MinusReason'
                 >
                   <MenuItem value='Brak'>Brak</MenuItem>
                   <MenuItem value={'KUNDI'}>KUNDI</MenuItem>
@@ -404,14 +436,35 @@ const ClientManagment = (props) => {
             </>
           ) : null}
 
-          <Button
-            style={{ margin: '20px 0' }}
-            variant='contained'
-            color='primary'
-            onClick={handleSubmit}
-          >
-            Zatwierdź
-          </Button>
+          {dataToEdit ? (
+            <Grid container justify='space-between'>
+              <Button
+                style={{ margin: '20px 0' }}
+                variant='outlined'
+                color='primary'
+                onClick={() => setEditDialogVisible(false)}
+              >
+                Anuluj
+              </Button>
+              <Button
+                style={{ margin: '20px 0' }}
+                variant='contained'
+                color='primary'
+                onClick={handleSubmit}
+              >
+                Zapisz
+              </Button>
+            </Grid>
+          ) : (
+            <Button
+              style={{ margin: '20px 0' }}
+              variant='contained'
+              color='primary'
+              onClick={handleSubmit}
+            >
+              Zatwierdź
+            </Button>
+          )}
         </Grid>
       </StyledForm>
     </Paper>

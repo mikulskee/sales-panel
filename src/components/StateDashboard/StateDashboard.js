@@ -27,6 +27,7 @@ import { UsersContext } from '../../contexts/UsersContext';
 import { AppContext } from '../../contexts/AppContext';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 import DeleteConfirmationDialog from '../DeleteConfirmationDialog/DeleteConfirmationDialog';
+import EditDialog from '../EditDialog/EditDialog';
 
 const StateDashboard = (props) => {
   const { personalData } = useContext(PersonalDataContext);
@@ -40,6 +41,9 @@ const StateDashboard = (props) => {
     deleteConfirmationDialogVisible,
     setDeleteConfirmationDialogVisible,
   ] = useState(false);
+  const [editDialogVisible, setEditDialogVisible] = useState(false);
+  const [dataToEdit, setDataToEdit] = useState();
+
   const [overall, setOverall] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [minusCommisions, setMinusCommisions] = useState();
@@ -50,10 +54,14 @@ const StateDashboard = (props) => {
   const [itemToDelete, setItemToDelete] = useState();
   const { data, admin, title, company } = props;
 
+  const handleOpenEditDialog = (data) => (event) => {
+    console.log(data);
+    setEditDialogVisible(true);
+    setDataToEdit(data);
+  };
   const handleOpenDeleteDialog = (item) => (event) => {
     setDeleteConfirmationDialogVisible(true);
     setItemToDelete(item);
-    console.log('lolo');
   };
 
   const handleDeleteData = (item) => (event) => {
@@ -183,7 +191,11 @@ const StateDashboard = (props) => {
 
             {admin ? (
               <ListItemSecondaryAction>
-                <IconButton edge='end' aria-label='create'>
+                <IconButton
+                  edge='end'
+                  aria-label='create'
+                  onClick={handleOpenEditDialog(item)}
+                >
                   <CreateIcon />
                 </IconButton>
                 <IconButton
@@ -253,7 +265,11 @@ const StateDashboard = (props) => {
             </Box>
             {admin ? (
               <ListItemSecondaryAction>
-                <IconButton edge='end' aria-label='create'>
+                <IconButton
+                  edge='end'
+                  aria-label='create'
+                  onClick={handleOpenEditDialog(item)}
+                >
                   <CreateIcon />
                 </IconButton>
                 <IconButton
@@ -453,6 +469,11 @@ const StateDashboard = (props) => {
             }
             handleDeleteData={handleDeleteData}
             itemToDelete={itemToDelete}
+          />
+          <EditDialog
+            editDialogVisible={editDialogVisible}
+            dataToEdit={dataToEdit}
+            setEditDialogVisible={setEditDialogVisible}
           />
         </>
       ) : (
