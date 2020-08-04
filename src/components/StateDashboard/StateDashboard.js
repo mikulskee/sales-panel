@@ -1,8 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import firebase from '../../firebase';
-// import moment from 'moment';
-// import 'moment/locale/pl';
 import {
   Typography,
   Paper,
@@ -34,6 +32,7 @@ const StateDashboard = (props) => {
   const { users } = useContext(UsersContext);
   const {
     personalStateVisible,
+    companyMonthlyStateVisible,
     companyGeneralStateVisible,
     setSuccessDeleteSnackbarOpen,
   } = useContext(AppContext);
@@ -52,7 +51,7 @@ const StateDashboard = (props) => {
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
   const [itemToDelete, setItemToDelete] = useState();
-  const { data, admin, title, company } = props;
+  const { data, admin, title, company, subtitle } = props;
 
   const handleOpenEditDialog = (data) => (event) => {
     console.log(data);
@@ -102,7 +101,7 @@ const StateDashboard = (props) => {
 
   const checkSize = () => {
     if (companyState) {
-      if (personalStateVisible) {
+      if (personalStateVisible || companyMonthlyStateVisible) {
         return 11;
       } else {
         return 5;
@@ -349,36 +348,49 @@ const StateDashboard = (props) => {
             xl={5}
             style={{ maxWidth: '1400px', margin: '0 auto' }}
           >
-            <Typography
-              variant='h4'
-              style={{
-                position: 'relative',
-                textAlign: 'center',
-                margin: '0 auto',
-                marginTop: '20px',
-                color: 'white',
-                fontWeight: 'bold',
-              }}
-            >
-              {title}
-              {companyState ? null : (
-                <>
-                  {overall ? (
-                    <Chip
-                      style={{
-                        position: 'absolute',
-                        left: '105%',
-                        padding: '0 5px',
-                        backgroundColor: `${
-                          overall >= 0 ? '#d5ffde' : '#ffcbcb'
-                        }`,
-                      }}
-                      label={overall}
-                    />
-                  ) : null}
-                </>
-              )}
-            </Typography>
+            <Grid container justify='center' direction='column'>
+              <Typography
+                variant='h4'
+                style={{
+                  position: 'relative',
+                  textAlign: 'center',
+                  margin: '0 auto',
+                  marginTop: '20px',
+                  color: 'white',
+                  fontWeight: 'bold',
+                }}
+              >
+                {title}
+                {companyState ? null : (
+                  <>
+                    {overall ? (
+                      <Chip
+                        style={{
+                          position: 'absolute',
+                          left: '105%',
+                          padding: '0 5px',
+                          backgroundColor: `${
+                            overall >= 0 ? '#d5ffde' : '#ffcbcb'
+                          }`,
+                        }}
+                        label={overall}
+                      />
+                    ) : null}
+                  </>
+                )}
+              </Typography>
+              <Typography
+                variant='subtitle1'
+                style={{
+                  textAlign: 'center',
+                  margin: '0 auto',
+                  marginTop: '20px',
+                  color: 'white',
+                }}
+              >
+                {subtitle}
+              </Typography>
+            </Grid>
             <Grid container justify='center' style={{ margin: '20px auto' }}>
               {companyState ? (
                 <Grid container justify='center'>

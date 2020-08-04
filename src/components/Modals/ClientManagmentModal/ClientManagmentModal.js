@@ -121,7 +121,7 @@ const ClientManagment = (props) => {
     if (oldCommision) {
       return '';
     } else {
-      return moment(new Date()).format('L').slice(3);
+      return moment(new Date()).format('MMMM YYYY');
     }
   };
   const handleSubmit = () => {

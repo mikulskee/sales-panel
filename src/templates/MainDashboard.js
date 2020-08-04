@@ -1,4 +1,6 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import moment from 'moment';
+import 'moment/locale/pl';
 import PersonalState from './PersonalState';
 import CompanyState from './CompanyState';
 import { Grid, Chip, Avatar, Snackbar } from '@material-ui/core';
@@ -7,6 +9,8 @@ import Tooltips from '../components/Tooltips/Tooltips';
 import DoneIcon from '@material-ui/icons/Done';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import { AppContext } from '../contexts/AppContext';
+import CompanyStateMonthly from './CompanyStateMonthly';
+import { CompanyStateContext } from '../contexts/CompanyStateContext';
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -22,7 +26,23 @@ const MainDashboard = () => {
     setPersonalStateVisible,
     personalStateVisible,
     companyGeneralStateVisible,
+    companyMonthlyStateVisible,
+    setCompanyMonthlyStateVisible,
   } = useContext(AppContext);
+
+  const [currentTimestamp, setCurrentTimestamp] = useState();
+  const { companyState } = useContext(CompanyStateContext);
+  useEffect(() => {
+    setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
+  }, []);
+
+  useEffect(() => {
+    if (companyState) {
+      console.log(
+        companyState.filter((item) => item.timestamp === currentTimestamp)
+      );
+    }
+  });
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -37,6 +57,8 @@ const MainDashboard = () => {
       setPersonalStateVisible(!personalStateVisible);
     } else if (component === 'company-general') {
       setCompanyGeneralStateVisible(!companyGeneralStateVisible);
+    } else {
+      setCompanyMonthlyStateVisible(!companyMonthlyStateVisible);
     }
   };
   return (
@@ -61,6 +83,25 @@ const MainDashboard = () => {
           <Chip
             avatar={
               <Avatar>
+                {companyMonthlyStateVisible ? (
+                  <DoneIcon />
+                ) : (
+                  <NotInterestedIcon />
+                )}
+              </Avatar>
+            }
+            label='Stan firmowy miesięczny'
+            clickable
+            color='primary'
+            onClick={handleVisibility('company-monthly')}
+            style={{
+              opacity: `${companyMonthlyStateVisible ? 1 : 0.6}`,
+              margin: '10px',
+            }}
+          />
+          <Chip
+            avatar={
+              <Avatar>
                 {companyGeneralStateVisible ? (
                   <DoneIcon />
                 ) : (
@@ -78,7 +119,20 @@ const MainDashboard = () => {
             }}
           />
         </Grid>
-        {personalStateVisible ? <PersonalState /> : null}
+        <Grid
+          container
+          item
+          direction='column'
+          lg={companyGeneralStateVisible ? 5 : 10}
+          style={{ height: 'fit-content' }}
+        >
+          {personalStateVisible ? (
+            <PersonalState currentTimestamp={currentTimestamp} />
+          ) : null}
+          {companyMonthlyStateVisible ? (
+            <CompanyStateMonthly currentTimestamp={currentTimestamp} />
+          ) : null}
+        </Grid>
         {companyGeneralStateVisible ? <CompanyState /> : null}
       </Grid>
       <Tooltips />

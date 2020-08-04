@@ -9,7 +9,9 @@ const CompanyState = () => {
   const [admin, setAdmin] = useState('');
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
-  const { personalStateVisible } = useContext(AppContext);
+  const { personalStateVisible, companyMonthlyStateVisible } = useContext(
+    AppContext
+  );
 
   useEffect(() => {
     if (personalData) {
@@ -21,13 +23,16 @@ const CompanyState = () => {
     }
   }, [personalData]);
 
+  const setSize = () => {
+    if (personalStateVisible || companyMonthlyStateVisible) {
+      return 7;
+    } else {
+      return 11;
+    }
+  };
+
   return (
-    <Grid
-      container
-      item
-      lg={personalStateVisible ? 7 : 11}
-      style={{ margin: '0 auto' }}
-    >
+    <Grid container item lg={setSize()} style={{ margin: '0 auto' }}>
       <Paper
         elevation={3}
         style={{

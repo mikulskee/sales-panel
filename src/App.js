@@ -24,12 +24,6 @@ const App = () => {
                 <Switch>
                   <Route path='/' exact component={MainTemplate} />
                   <Route path='/dashboard' component={MainDashboard} />
-                  <Route path='/personal-state' component={PersonalState} />
-                  <Route path='/company-state' component={CompanyState} />
-                  <Route
-                    path='/company-state-monthly'
-                    component={CompanyStateMonthly}
-                  />
                 </Switch>
               </BrowserRouter>
             </AppContextProvider>

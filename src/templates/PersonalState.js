@@ -3,12 +3,12 @@ import StateDashboard from '../components/StateDashboard/StateDashboard';
 import { PersonalStateContext } from '../contexts/PersonalStateContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
 import { Paper, Grid } from '@material-ui/core';
-import { AppContext } from '../contexts/AppContext';
-const PersonalState = () => {
+
+const PersonalState = (props) => {
   const [admin, setAdmin] = useState('');
   const { personalState } = useContext(PersonalStateContext);
   const { personalData } = useContext(PersonalDataContext);
-  const { companyGeneralStateVisible } = useContext(AppContext);
+  const { currentTimestamp } = props;
 
   useEffect(() => {
     if (personalData) {
@@ -20,12 +20,7 @@ const PersonalState = () => {
     }
   }, [personalData]);
   return (
-    <Grid
-      container
-      item
-      lg={companyGeneralStateVisible ? 5 : 11}
-      style={{ margin: '0 auto' }}
-    >
+    <Grid container style={{ margin: '0 auto' }}>
       <Paper
         elevation={3}
         style={{
@@ -37,6 +32,7 @@ const PersonalState = () => {
       >
         <StateDashboard
           title='Stan indywidualny'
+          subtitle={`Dane na ${currentTimestamp}`}
           data={personalState}
           admin={admin}
         />

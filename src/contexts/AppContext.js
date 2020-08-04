@@ -12,6 +12,9 @@ const AppContextProvider = (props) => {
   const [companyGeneralStateVisible, setCompanyGeneralStateVisible] = useState(
     true
   );
+  const [companyMonthlyStateVisible, setCompanyMonthlyStateVisible] = useState(
+    true
+  );
 
   return (
     <AppContext.Provider
@@ -26,6 +29,8 @@ const AppContextProvider = (props) => {
         setCompanyGeneralStateVisible,
         successDeleteSnackbarOpen,
         setSuccessDeleteSnackbarOpen,
+        companyMonthlyStateVisible,
+        setCompanyMonthlyStateVisible,
       }}
     >
       {props.children}
