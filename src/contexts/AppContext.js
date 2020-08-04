@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export const AppContext = createContext();
 
@@ -8,14 +8,64 @@ const AppContextProvider = (props) => {
   );
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [failSnackbarOpen, setFailSnackbarOpen] = useState(false);
-  const [personalStateVisible, setPersonalStateVisible] = useState(true);
+  const [personalStateVisible, setPersonalStateVisible] = useState('true');
   const [companyGeneralStateVisible, setCompanyGeneralStateVisible] = useState(
-    true
+    'true'
   );
   const [companyMonthlyStateVisible, setCompanyMonthlyStateVisible] = useState(
     true
   );
 
+  useEffect(() => {
+    if (!localStorage.getItem('personalStateVisible')) {
+      localStorage.setItem('personalStateVisible', `${personalStateVisible}`);
+    } else {
+      setPersonalStateVisible(localStorage.getItem('personalStateVisible'));
+      console.log(personalStateVisible);
+    }
+  }, []);
+
+  const changePersonalStateVisible = (state) => {
+    setPersonalStateVisible(state);
+    localStorage.setItem('personalStateVisible', state);
+  };
+  useEffect(() => {
+    if (!localStorage.getItem('companyGeneralStateVisible')) {
+      localStorage.setItem(
+        'companyGeneralStateVisible',
+        `${companyGeneralStateVisible}`
+      );
+    } else {
+      setCompanyGeneralStateVisible(
+        localStorage.getItem('companyGeneralStateVisible')
+      );
+      console.log(companyGeneralStateVisible);
+    }
+  }, []);
+
+  const changeCompanyGeneralStateVisible = (state) => {
+    setCompanyGeneralStateVisible(state);
+    localStorage.setItem('companyGeneralStateVisible', state);
+  };
+
+  useEffect(() => {
+    if (!localStorage.getItem('companyMonthlyStateVisible')) {
+      localStorage.setItem(
+        'companyMonthlyStateVisible',
+        `${companyMonthlyStateVisible}`
+      );
+    } else {
+      setCompanyMonthlyStateVisible(
+        localStorage.getItem('companyMonthlyStateVisible')
+      );
+      console.log(companyMonthlyStateVisible);
+    }
+  }, []);
+
+  const changeCompanyMonthlyStateVisible = (state) => {
+    setCompanyMonthlyStateVisible(state);
+    localStorage.setItem('companyMonthlyStateVisible', state);
+  };
   return (
     <AppContext.Provider
       value={{
@@ -24,13 +74,13 @@ const AppContextProvider = (props) => {
         failSnackbarOpen,
         setFailSnackbarOpen,
         personalStateVisible,
-        setPersonalStateVisible,
+        changePersonalStateVisible,
         companyGeneralStateVisible,
-        setCompanyGeneralStateVisible,
+        changeCompanyGeneralStateVisible,
         successDeleteSnackbarOpen,
         setSuccessDeleteSnackbarOpen,
         companyMonthlyStateVisible,
-        setCompanyMonthlyStateVisible,
+        changeCompanyMonthlyStateVisible,
       }}
     >
       {props.children}

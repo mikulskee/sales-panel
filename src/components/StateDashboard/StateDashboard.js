@@ -350,7 +350,7 @@ const StateDashboard = (props) => {
           >
             <Grid container justify='center' direction='column'>
               <Typography
-                variant='h4'
+                variant={`${companyState ? 'h4' : 'h5'}`}
                 style={{
                   position: 'relative',
                   textAlign: 'center',

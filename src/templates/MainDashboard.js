@@ -23,12 +23,12 @@ const MainDashboard = () => {
     successDeleteSnackbarOpen,
     successSnackbarOpen,
     setSuccessSnackbarOpen,
-    setCompanyGeneralStateVisible,
-    setPersonalStateVisible,
+    changeCompanyGeneralStateVisible,
+    changePersonalStateVisible,
     personalStateVisible,
     companyGeneralStateVisible,
     companyMonthlyStateVisible,
-    setCompanyMonthlyStateVisible,
+    changeCompanyMonthlyStateVisible,
   } = useContext(AppContext);
 
   const [currentTimestamp, setCurrentTimestamp] = useState();
@@ -80,11 +80,23 @@ const MainDashboard = () => {
 
   const handleVisibility = (component) => () => {
     if (component === 'personal') {
-      setPersonalStateVisible(!personalStateVisible);
+      if (personalStateVisible === 'true') {
+        changePersonalStateVisible('false');
+      } else {
+        changePersonalStateVisible('true');
+      }
     } else if (component === 'company-general') {
-      setCompanyGeneralStateVisible(!companyGeneralStateVisible);
+      if (companyGeneralStateVisible === 'true') {
+        changeCompanyGeneralStateVisible('false');
+      } else {
+        changeCompanyGeneralStateVisible('true');
+      }
     } else {
-      setCompanyMonthlyStateVisible(!companyMonthlyStateVisible);
+      if (companyMonthlyStateVisible === 'true') {
+        changeCompanyMonthlyStateVisible('false');
+      } else {
+        changeCompanyMonthlyStateVisible('true');
+      }
     }
   };
   return (
@@ -94,7 +106,11 @@ const MainDashboard = () => {
           <Chip
             avatar={
               <Avatar>
-                {personalStateVisible ? <DoneIcon /> : <NotInterestedIcon />}
+                {personalStateVisible === 'true' ? (
+                  <DoneIcon />
+                ) : (
+                  <NotInterestedIcon />
+                )}
               </Avatar>
             }
             label='Stan indywidualny'
@@ -102,14 +118,14 @@ const MainDashboard = () => {
             color='primary'
             onClick={handleVisibility('personal')}
             style={{
-              opacity: `${personalStateVisible ? 1 : 0.6}`,
+              opacity: `${personalStateVisible === 'true' ? 1 : 0.6}`,
               margin: '10px',
             }}
           />
           <Chip
             avatar={
               <Avatar>
-                {companyMonthlyStateVisible ? (
+                {companyMonthlyStateVisible === 'true' ? (
                   <DoneIcon />
                 ) : (
                   <NotInterestedIcon />
@@ -121,14 +137,14 @@ const MainDashboard = () => {
             color='primary'
             onClick={handleVisibility('company-monthly')}
             style={{
-              opacity: `${companyMonthlyStateVisible ? 1 : 0.6}`,
+              opacity: `${companyMonthlyStateVisible === 'true' ? 1 : 0.6}`,
               margin: '10px',
             }}
           />
           <Chip
             avatar={
               <Avatar>
-                {companyGeneralStateVisible ? (
+                {companyGeneralStateVisible === 'true' ? (
                   <DoneIcon />
                 ) : (
                   <NotInterestedIcon />
@@ -140,7 +156,7 @@ const MainDashboard = () => {
             color='primary'
             onClick={handleVisibility('company-general')}
             style={{
-              opacity: `${companyGeneralStateVisible ? 1 : 0.6}`,
+              opacity: `${companyGeneralStateVisible === 'true' ? 1 : 0.6}`,
               margin: '10px',
             }}
           />
@@ -149,23 +165,23 @@ const MainDashboard = () => {
           container
           item
           direction='column'
-          lg={companyGeneralStateVisible ? 5 : 10}
+          lg={companyGeneralStateVisible === 'true' ? 5 : 10}
           style={{ height: 'fit-content' }}
         >
-          {personalStateVisible ? (
+          {personalStateVisible === 'true' ? (
             <PersonalState
               currentTimestamp={currentTimestamp}
               data={dataForPersonalState}
             />
           ) : null}
-          {companyMonthlyStateVisible ? (
+          {companyMonthlyStateVisible === 'true' ? (
             <CompanyStateMonthly
               currentTimestamp={currentTimestamp}
               data={dataForCompanyMonthlyState}
             />
           ) : null}
         </Grid>
-        {companyGeneralStateVisible ? <CompanyState /> : null}
+        {companyGeneralStateVisible === 'true' ? <CompanyState /> : null}
       </Grid>
       <Tooltips />
       <Snackbar

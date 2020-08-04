@@ -58,7 +58,6 @@ const ClientManagment = (props) => {
   const [oldCommision, setOldCommision] = useState(false);
   const { admin, handleClose, dataToEdit, setEditDialogVisible } = props;
   const { personalData } = useContext(PersonalDataContext);
-  const { users } = useContext(UsersContext);
   const { setSuccessSnackbarOpen } = useContext(AppContext);
 
   useEffect(() => {
