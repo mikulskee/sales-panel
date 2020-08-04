@@ -24,11 +24,15 @@ import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateIcon from '@material-ui/icons/Create';
 import { UsersContext } from '../../contexts/UsersContext';
+import { AppContext } from '../../contexts/AppContext';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 
 const StateDashboard = (props) => {
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
+  const { personalStateVisible, companyGeneralStateVisible } = useContext(
+    AppContext
+  );
   const [overall, setOverall] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [minusCommisions, setMinusCommisions] = useState();
@@ -72,6 +76,21 @@ const StateDashboard = (props) => {
     }
   };
 
+  const checkSize = () => {
+    if (companyState) {
+      if (personalStateVisible) {
+        return 11;
+      } else {
+        return 5;
+      }
+    } else {
+      if (companyGeneralStateVisible) {
+        return 11;
+      } else {
+        return 5;
+      }
+    }
+  };
   useEffect(() => {
     if (company) {
       setCompanyState(true);
@@ -330,7 +349,7 @@ const StateDashboard = (props) => {
           <Grid container justify='center' style={{ margin: '20px auto' }}>
             {companyState ? (
               <Grid container justify='center'>
-                <Grid item xs={3} lg={5} style={{ margin: '10px 5px' }}>
+                <Grid item xs={3} lg={5} xl={3} style={{ margin: '10px 5px' }}>
                   <Paper
                     elevation={3}
                     style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
@@ -356,6 +375,7 @@ const StateDashboard = (props) => {
             <Grid
               item
               xs={11}
+              lg={checkSize()}
               xl={companyState ? 6 : 11}
               style={{ margin: '10px 5px' }}
             >
@@ -379,6 +399,7 @@ const StateDashboard = (props) => {
             <Grid
               item
               xs={11}
+              lg={checkSize()}
               xl={companyState ? 5 : 11}
               style={{ margin: '10px 5px' }}
             >

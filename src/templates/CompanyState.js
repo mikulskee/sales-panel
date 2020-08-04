@@ -2,12 +2,14 @@ import React, { useContext, useState, useEffect } from 'react';
 import StateDashboard from '../components/StateDashboard/StateDashboard';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
+import { AppContext } from '../contexts/AppContext';
 import { Paper, Grid } from '@material-ui/core';
 
 const CompanyState = () => {
   const [admin, setAdmin] = useState('');
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
+  const { personalStateVisible } = useContext(AppContext);
 
   useEffect(() => {
     if (personalData) {
@@ -20,7 +22,12 @@ const CompanyState = () => {
   }, [personalData]);
 
   return (
-    <Grid container item lg={7} style={{ margin: '0 auto' }}>
+    <Grid
+      container
+      item
+      lg={personalStateVisible ? 7 : 11}
+      style={{ margin: '0 auto' }}
+    >
       <Paper
         elevation={3}
         style={{

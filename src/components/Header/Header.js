@@ -28,7 +28,7 @@ import { UsersContext } from '../../contexts/UsersContext';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 
 const Wrapper = styled.header`
-  background-color: #fff;
+  background-color: #9afff9;
 `;
 
 const StyledDrawer = styled(Drawer)`

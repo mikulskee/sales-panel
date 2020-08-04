@@ -10,6 +10,7 @@ import PersonalDataContextProvider from './contexts/PersonalDataContext';
 import Header from './components/Header/Header';
 import PersonalStateContextProvider from './contexts/PersonalStateContext';
 import MainDashboard from './templates/MainDashboard';
+import AppContextProvider from './contexts/AppContext';
 
 const App = () => {
   return (
@@ -17,19 +18,21 @@ const App = () => {
       <PersonalDataContextProvider>
         <PersonalStateContextProvider>
           <CompanyStateContextProvider>
-            <BrowserRouter>
-              <Header />
-              <Switch>
-                <Route path='/' exact component={MainTemplate} />
-                <Route path='/dashboard' component={MainDashboard} />
-                <Route path='/personal-state' component={PersonalState} />
-                <Route path='/company-state' component={CompanyState} />
-                <Route
-                  path='/company-state-monthly'
-                  component={CompanyStateMonthly}
-                />
-              </Switch>
-            </BrowserRouter>
+            <AppContextProvider>
+              <BrowserRouter>
+                <Header />
+                <Switch>
+                  <Route path='/' exact component={MainTemplate} />
+                  <Route path='/dashboard' component={MainDashboard} />
+                  <Route path='/personal-state' component={PersonalState} />
+                  <Route path='/company-state' component={CompanyState} />
+                  <Route
+                    path='/company-state-monthly'
+                    component={CompanyStateMonthly}
+                  />
+                </Switch>
+              </BrowserRouter>
+            </AppContextProvider>
           </CompanyStateContextProvider>
         </PersonalStateContextProvider>
       </PersonalDataContextProvider>

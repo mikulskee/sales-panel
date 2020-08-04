@@ -23,6 +23,7 @@ import {
 } from '@material-ui/core';
 import { PersonalDataContext } from '../../../contexts/PersonalDataContext';
 import { UsersContext } from '../../../contexts/UsersContext';
+import { AppContext } from '../../../contexts/AppContext';
 
 const StyledForm = styled.form`
   & * {
@@ -58,6 +59,7 @@ const ClientManagment = (props) => {
   const { admin, handleClose } = props;
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
+  const { setSuccessSnackbarOpen } = useContext(AppContext);
 
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
@@ -124,7 +126,9 @@ const ClientManagment = (props) => {
               user: `${admin ? radioValue : personalData.initials}`,
               timestamp: moment(new Date()).format('L').slice(3),
               id,
-            });
+            })
+            .then(() => setSuccessSnackbarOpen(true))
+            .catch((err) => console.log(err));
         }
 
         firebase
@@ -140,7 +144,9 @@ const ClientManagment = (props) => {
               oldCommision ? '' : moment(new Date()).format('L').slice(3)
             }`,
             id,
-          });
+          })
+          .then(() => setSuccessSnackbarOpen(true))
+          .catch((err) => console.log(err));
 
         handleClose();
       } else {
@@ -163,7 +169,9 @@ const ClientManagment = (props) => {
               user: `${admin ? radioValue : personalData.initials}`,
               timestamp: moment(new Date()).format('L').slice(3),
               id,
-            });
+            })
+            .then(() => setSuccessSnackbarOpen(true))
+            .catch((err) => console.log(err));
         }
         firebase
           .firestore()
@@ -178,7 +186,10 @@ const ClientManagment = (props) => {
               oldCommision ? '' : moment(new Date()).format('L').slice(3)
             }`,
             id,
-          });
+          })
+          .then(() => setSuccessSnackbarOpen(true))
+          .catch((err) => console.log(err));
+
         handleClose();
       }
     }
