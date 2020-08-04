@@ -142,28 +142,6 @@ const ClientManagment = (props) => {
     if (!errorTitle && !errorReason) {
       if (minusReason) {
         const id = uuidv4();
-        if (!oldCommision) {
-          firebase
-            .firestore()
-            .collection(
-              `personal-state-${
-                admin
-                  ? users.filter((item) => item.initials === radioValue)[0].uid
-                  : personalData.uid
-              }`
-            )
-            .doc(id)
-            .set({
-              title: titleValue,
-              date: dateValue,
-              minus: minusReason,
-              user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: setTimestamp(),
-              id,
-            })
-            .then(() => setSuccessSnackbarOpen(true))
-            .catch((err) => console.log(err));
-        }
 
         firebase
           .firestore()
@@ -183,28 +161,6 @@ const ClientManagment = (props) => {
         handleClose();
       } else {
         const id = uuidv4();
-        if (!oldCommision) {
-          firebase
-            .firestore()
-            .collection(
-              `personal-state-${
-                admin
-                  ? users.filter((item) => item.initials === radioValue)[0].uid
-                  : personalData.uid
-              }`
-            )
-            .doc(id)
-            .set({
-              title: titleValue,
-              date: dateValue,
-              plus: `${plusReason === 'Brak' ? '' : plusReason}`,
-              user: `${admin ? radioValue : personalData.initials}`,
-              timestamp: setTimestamp(),
-              id,
-            })
-            .then(() => setSuccessSnackbarOpen(true))
-            .catch((err) => console.log(err));
-        }
         firebase
           .firestore()
           .collection(`company-state-general`)

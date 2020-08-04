@@ -1,12 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react';
 import StateDashboard from '../components/StateDashboard/StateDashboard';
-import { PersonalStateContext } from '../contexts/PersonalStateContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
 import { Paper, Grid } from '@material-ui/core';
 
 const PersonalState = (props) => {
   const [admin, setAdmin] = useState('');
-  const { personalState } = useContext(PersonalStateContext);
   const { personalData } = useContext(PersonalDataContext);
   const { currentTimestamp, data } = props;
 
