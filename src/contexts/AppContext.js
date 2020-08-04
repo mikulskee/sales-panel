@@ -13,7 +13,7 @@ const AppContextProvider = (props) => {
     'true'
   );
   const [companyMonthlyStateVisible, setCompanyMonthlyStateVisible] = useState(
-    true
+    'true'
   );
 
   useEffect(() => {
@@ -21,8 +21,8 @@ const AppContextProvider = (props) => {
       localStorage.setItem('personalStateVisible', `${personalStateVisible}`);
     } else {
       setPersonalStateVisible(localStorage.getItem('personalStateVisible'));
-      console.log(personalStateVisible);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changePersonalStateVisible = (state) => {
@@ -39,8 +39,8 @@ const AppContextProvider = (props) => {
       setCompanyGeneralStateVisible(
         localStorage.getItem('companyGeneralStateVisible')
       );
-      console.log(companyGeneralStateVisible);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeCompanyGeneralStateVisible = (state) => {
@@ -58,8 +58,8 @@ const AppContextProvider = (props) => {
       setCompanyMonthlyStateVisible(
         localStorage.getItem('companyMonthlyStateVisible')
       );
-      console.log(companyMonthlyStateVisible);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeCompanyMonthlyStateVisible = (state) => {

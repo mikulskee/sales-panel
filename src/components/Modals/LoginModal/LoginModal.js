@@ -44,7 +44,6 @@ const LoginModal = (props) => {
       .signInWithEmailAndPassword(values.login, values.password)
       .then((cred) => {
         setIsLoading(false);
-        console.log(props.history.push('/'));
       })
       .catch((err) => {
         setIsLoading(false);

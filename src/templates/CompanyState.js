@@ -24,7 +24,10 @@ const CompanyState = () => {
   }, [personalData]);
 
   const setSize = () => {
-    if (personalStateVisible || companyMonthlyStateVisible) {
+    if (
+      personalStateVisible === 'true' ||
+      companyMonthlyStateVisible === 'true'
+    ) {
       return 7;
     } else {
       return 11;

@@ -54,7 +54,6 @@ const StateDashboard = (props) => {
   const { data, admin, title, company, subtitle } = props;
 
   const handleOpenEditDialog = (data) => (event) => {
-    console.log(data);
     setEditDialogVisible(true);
     setDataToEdit(data);
   };
@@ -101,13 +100,16 @@ const StateDashboard = (props) => {
 
   const checkSize = () => {
     if (companyState) {
-      if (personalStateVisible || companyMonthlyStateVisible) {
+      if (
+        personalStateVisible === 'true' ||
+        companyMonthlyStateVisible === 'true'
+      ) {
         return 11;
       } else {
         return 5;
       }
     } else {
-      if (companyGeneralStateVisible) {
+      if (companyGeneralStateVisible === 'true') {
         return 11;
       } else {
         return 5;

@@ -22,7 +22,6 @@ import {
   Divider,
 } from '@material-ui/core';
 import { PersonalDataContext } from '../../../contexts/PersonalDataContext';
-import { UsersContext } from '../../../contexts/UsersContext';
 import { AppContext } from '../../../contexts/AppContext';
 
 const StyledForm = styled.form`
@@ -56,6 +55,7 @@ const ClientManagment = (props) => {
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorReason, setErrorReason] = useState(false);
   const [oldCommision, setOldCommision] = useState(false);
+  const [addToCurrentMonth, setAddToCurrentMonth] = useState(false);
   const { admin, handleClose, dataToEdit, setEditDialogVisible } = props;
   const { personalData } = useContext(PersonalDataContext);
   const { setSuccessSnackbarOpen } = useContext(AppContext);
@@ -87,6 +87,9 @@ const ClientManagment = (props) => {
     }
   }, [dataToEdit]);
 
+  const handleCheckboxCurrentMonth = (event) => {
+    setAddToCurrentMonth(event.target.checked);
+  };
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
   };
@@ -118,7 +121,11 @@ const ClientManagment = (props) => {
 
   const setTimestamp = () => {
     if (oldCommision) {
-      return '';
+      if (addToCurrentMonth) {
+        return moment(new Date()).format('MMMM YYYY');
+      } else {
+        return '';
+      }
     } else {
       return moment(new Date()).format('MMMM YYYY');
     }
@@ -140,8 +147,7 @@ const ClientManagment = (props) => {
 
     if (!errorTitle && !errorReason) {
       if (minusReason) {
-        const id = uuidv4();
-
+        const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
         firebase
           .firestore()
           .collection(`company-state-general`)
@@ -157,9 +163,13 @@ const ClientManagment = (props) => {
           .then(() => setSuccessSnackbarOpen(true))
           .catch((err) => console.log(err));
 
-        handleClose();
+        if (dataToEdit) {
+          setEditDialogVisible(false);
+        } else {
+          handleClose();
+        }
       } else {
-        const id = uuidv4();
+        const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
         firebase
           .firestore()
           .collection(`company-state-general`)
@@ -174,8 +184,11 @@ const ClientManagment = (props) => {
           })
           .then(() => setSuccessSnackbarOpen(true))
           .catch((err) => console.log(err));
-
-        handleClose();
+        if (dataToEdit) {
+          setEditDialogVisible(false);
+        } else {
+          handleClose();
+        }
       }
     }
   };
@@ -388,6 +401,26 @@ const ClientManagment = (props) => {
                 </RadioGroup>
               </FormControl>
               <StyledDivider />
+            </>
+          ) : null}
+
+          {dataToEdit ? (
+            <>
+              {dataToEdit.timestamp !==
+              moment(new Date()).format('MMMM YYYY') ? (
+                <FormControlLabel
+                  style={{ margin: '20px 0' }}
+                  control={
+                    <Checkbox
+                      checked={addToCurrentMonth}
+                      onChange={handleCheckboxCurrentMonth}
+                      name='currentMonth'
+                      color='primary'
+                    />
+                  }
+                  label='Dodać do bieżącego miesiąca?'
+                />
+              ) : null}
             </>
           ) : null}
 
