@@ -4,7 +4,7 @@ import { Grid, Paper } from '@material-ui/core';
 import StateDashboard from '../components/StateDashboard/StateDashboard';
 
 const CompanyStateMonthly = (props) => {
-  const { currentTimestamp } = props;
+  const { currentTimestamp, data } = props;
   return (
     <Grid container style={{ margin: '0 auto' }}>
       <Paper
@@ -19,7 +19,7 @@ const CompanyStateMonthly = (props) => {
         <StateDashboard
           title='Stan firmowy miesięczny'
           subtitle={`Dane na ${currentTimestamp}`}
-          // data={companyState}
+          data={data}
           admin={'admin'}
         />
       </Paper>

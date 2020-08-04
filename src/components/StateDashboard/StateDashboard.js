@@ -40,9 +40,9 @@ const StateDashboard = (props) => {
     deleteConfirmationDialogVisible,
     setDeleteConfirmationDialogVisible,
   ] = useState(false);
+  const [plannableClientsAmount] = useState(90);
   const [editDialogVisible, setEditDialogVisible] = useState(false);
   const [dataToEdit, setDataToEdit] = useState();
-
   const [overall, setOverall] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [minusCommisions, setMinusCommisions] = useState();
@@ -291,9 +291,9 @@ const StateDashboard = (props) => {
 
   useEffect(() => {
     if (plusCommisions) {
-      setPercentage((plusCommisions.length / 90) * 100);
+      setPercentage((plusCommisions.length / plannableClientsAmount) * 100);
     }
-  }, [plusCommisions]);
+  }, [plusCommisions, plannableClientsAmount]);
 
   const CircularProgressWithLabel = (props) => {
     return (
@@ -413,7 +413,7 @@ const StateDashboard = (props) => {
                         {plusCommisions ? (
                           <Chip
                             style={{ position: 'absolute', right: 0 }}
-                            label={`${plusCommisions.length} / 90`}
+                            label={`${plusCommisions.length} / ${plannableClientsAmount}`}
                           />
                         ) : null}
                       </Typography>

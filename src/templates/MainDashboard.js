@@ -11,6 +11,7 @@ import NotInterestedIcon from '@material-ui/icons/NotInterested';
 import { AppContext } from '../contexts/AppContext';
 import CompanyStateMonthly from './CompanyStateMonthly';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
+import { PersonalDataContext } from '../contexts/PersonalDataContext';
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -31,18 +32,43 @@ const MainDashboard = () => {
   } = useContext(AppContext);
 
   const [currentTimestamp, setCurrentTimestamp] = useState();
+  const [
+    dataForCompanyMonthlyState,
+    setDataForCompanyMonthlyState,
+  ] = useState();
+  const [dataForPersonalState, setDataForPersonalState] = useState();
   const { companyState } = useContext(CompanyStateContext);
+  const { personalData } = useContext(PersonalDataContext);
   useEffect(() => {
     setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
   }, []);
 
   useEffect(() => {
     if (companyState) {
-      console.log(
+      setDataForCompanyMonthlyState(
         companyState.filter((item) => item.timestamp === currentTimestamp)
       );
+
+      if (personalData.admin) {
+        setDataForPersonalState(
+          companyState
+            .filter((item) => item.timestamp === currentTimestamp)
+            .filter((item) => item.user === 'QA')
+        );
+      } else {
+        setDataForPersonalState(
+          companyState
+            .filter((item) => item.timestamp === currentTimestamp)
+            .filter((item) => item.user === personalData.initials)
+        );
+      }
     }
-  });
+  }, [
+    setDataForCompanyMonthlyState,
+    companyState,
+    currentTimestamp,
+    personalData,
+  ]);
 
   const handleClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -127,10 +153,16 @@ const MainDashboard = () => {
           style={{ height: 'fit-content' }}
         >
           {personalStateVisible ? (
-            <PersonalState currentTimestamp={currentTimestamp} />
+            <PersonalState
+              currentTimestamp={currentTimestamp}
+              data={dataForPersonalState}
+            />
           ) : null}
           {companyMonthlyStateVisible ? (
-            <CompanyStateMonthly currentTimestamp={currentTimestamp} />
+            <CompanyStateMonthly
+              currentTimestamp={currentTimestamp}
+              data={dataForCompanyMonthlyState}
+            />
           ) : null}
         </Grid>
         {companyGeneralStateVisible ? <CompanyState /> : null}

@@ -8,7 +8,7 @@ const PersonalState = (props) => {
   const [admin, setAdmin] = useState('');
   const { personalState } = useContext(PersonalStateContext);
   const { personalData } = useContext(PersonalDataContext);
-  const { currentTimestamp } = props;
+  const { currentTimestamp, data } = props;
 
   useEffect(() => {
     if (personalData) {
@@ -33,7 +33,7 @@ const PersonalState = (props) => {
         <StateDashboard
           title='Stan indywidualny'
           subtitle={`Dane na ${currentTimestamp}`}
-          data={personalState}
+          data={data}
           admin={admin}
         />
       </Paper>
