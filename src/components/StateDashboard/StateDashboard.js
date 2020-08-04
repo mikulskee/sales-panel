@@ -26,13 +26,20 @@ import CreateIcon from '@material-ui/icons/Create';
 import { UsersContext } from '../../contexts/UsersContext';
 import { AppContext } from '../../contexts/AppContext';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
+import DeleteConfirmationDialog from '../DeleteConfirmationDialog/DeleteConfirmationDialog';
 
 const StateDashboard = (props) => {
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
-  const { personalStateVisible, companyGeneralStateVisible } = useContext(
-    AppContext
-  );
+  const {
+    personalStateVisible,
+    companyGeneralStateVisible,
+    setSuccessDeleteSnackbarOpen,
+  } = useContext(AppContext);
+  const [
+    deleteConfirmationDialogVisible,
+    setDeleteConfirmationDialogVisible,
+  ] = useState(false);
   const [overall, setOverall] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [minusCommisions, setMinusCommisions] = useState();
@@ -40,7 +47,14 @@ const StateDashboard = (props) => {
   const [plusList, setPlusList] = useState();
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState();
   const { data, admin, title, company } = props;
+
+  const handleOpenDeleteDialog = (item) => (event) => {
+    setDeleteConfirmationDialogVisible(true);
+    setItemToDelete(item);
+    console.log('lolo');
+  };
 
   const handleDeleteData = (item) => (event) => {
     if (item.timestamp) {
@@ -54,7 +68,8 @@ const StateDashboard = (props) => {
         .doc(item.id)
         .delete()
         .then(() => {
-          console.log('usunięto');
+          setDeleteConfirmationDialogVisible(false);
+          setSuccessDeleteSnackbarOpen(true);
         });
     }
 
@@ -64,7 +79,8 @@ const StateDashboard = (props) => {
       .doc(item.id)
       .delete()
       .then(() => {
-        console.log('usunięto');
+        setDeleteConfirmationDialogVisible(false);
+        setSuccessDeleteSnackbarOpen(true);
       });
   };
 
@@ -173,7 +189,7 @@ const StateDashboard = (props) => {
                 <IconButton
                   edge='end'
                   aria-label='delete'
-                  onClick={handleDeleteData(item)}
+                  onClick={handleOpenDeleteDialog(item)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -243,7 +259,7 @@ const StateDashboard = (props) => {
                 <IconButton
                   edge='end'
                   aria-label='delete'
-                  onClick={handleDeleteData(item)}
+                  onClick={handleOpenDeleteDialog(item)}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -310,119 +326,135 @@ const StateDashboard = (props) => {
   return (
     <>
       {users ? (
-        <Grid
-          container
-          item
-          xl={5}
-          style={{ maxWidth: '1400px', margin: '0 auto' }}
-        >
-          <Typography
-            variant='h4'
-            style={{
-              position: 'relative',
-              textAlign: 'center',
-              margin: '0 auto',
-              marginTop: '20px',
-              color: 'white',
-              fontWeight: 'bold',
-            }}
+        <>
+          <Grid
+            container
+            item
+            xl={5}
+            style={{ maxWidth: '1400px', margin: '0 auto' }}
           >
-            {title}
-            {companyState ? null : (
-              <>
-                {overall ? (
-                  <Chip
-                    style={{
-                      position: 'absolute',
-                      left: '105%',
-                      padding: '0 5px',
-                      backgroundColor: `${
-                        overall >= 0 ? '#d5ffde' : '#ffcbcb'
-                      }`,
-                    }}
-                    label={overall}
-                  />
-                ) : null}
-              </>
-            )}
-          </Typography>
-          <Grid container justify='center' style={{ margin: '20px auto' }}>
-            {companyState ? (
-              <Grid container justify='center'>
-                <Grid item xs={3} lg={5} xl={3} style={{ margin: '10px 5px' }}>
-                  <Paper
-                    elevation={3}
-                    style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
+            <Typography
+              variant='h4'
+              style={{
+                position: 'relative',
+                textAlign: 'center',
+                margin: '0 auto',
+                marginTop: '20px',
+                color: 'white',
+                fontWeight: 'bold',
+              }}
+            >
+              {title}
+              {companyState ? null : (
+                <>
+                  {overall ? (
+                    <Chip
+                      style={{
+                        position: 'absolute',
+                        left: '105%',
+                        padding: '0 5px',
+                        backgroundColor: `${
+                          overall >= 0 ? '#d5ffde' : '#ffcbcb'
+                        }`,
+                      }}
+                      label={overall}
+                    />
+                  ) : null}
+                </>
+              )}
+            </Typography>
+            <Grid container justify='center' style={{ margin: '20px auto' }}>
+              {companyState ? (
+                <Grid container justify='center'>
+                  <Grid
+                    item
+                    xs={3}
+                    lg={5}
+                    xl={3}
+                    style={{ margin: '10px 5px' }}
                   >
-                    <Typography
-                      variant='h6'
-                      style={{ position: 'relative', paddingBottom: '10px' }}
+                    <Paper
+                      elevation={3}
+                      style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
                     >
-                      Stan całkowity{' '}
-                      {plusCommisions ? (
-                        <Chip
-                          style={{ position: 'absolute', right: 0 }}
-                          label={`${plusCommisions.length} / 90`}
-                        />
-                      ) : null}
-                    </Typography>
-                    <Divider light />
-                    <CircularProgressWithLabel size={80} value={percentage} />
-                  </Paper>
+                      <Typography
+                        variant='h6'
+                        style={{ position: 'relative', paddingBottom: '10px' }}
+                      >
+                        Stan całkowity{' '}
+                        {plusCommisions ? (
+                          <Chip
+                            style={{ position: 'absolute', right: 0 }}
+                            label={`${plusCommisions.length} / 90`}
+                          />
+                        ) : null}
+                      </Typography>
+                      <Divider light />
+                      <CircularProgressWithLabel size={80} value={percentage} />
+                    </Paper>
+                  </Grid>
                 </Grid>
+              ) : null}
+              <Grid
+                item
+                xs={11}
+                lg={checkSize()}
+                xl={companyState ? 6 : 11}
+                style={{ margin: '10px 5px' }}
+              >
+                <Paper
+                  elevation={3}
+                  style={{ padding: '20px 0', backgroundColor: '#d5ffde' }}
+                >
+                  <Typography variant='h6' style={{ padding: '10px 20px' }}>
+                    Zlecenia pozyskane
+                    {plusCommisions ? (
+                      <Chip
+                        label={plusCommisions.length}
+                        style={{ marginLeft: '10px' }}
+                      />
+                    ) : null}
+                  </Typography>
+                  <Divider light />
+                  <List>{plusList}</List>
+                </Paper>
               </Grid>
-            ) : null}
-            <Grid
-              item
-              xs={11}
-              lg={checkSize()}
-              xl={companyState ? 6 : 11}
-              style={{ margin: '10px 5px' }}
-            >
-              <Paper
-                elevation={3}
-                style={{ padding: '20px 0', backgroundColor: '#d5ffde' }}
+              <Grid
+                item
+                xs={11}
+                lg={checkSize()}
+                xl={companyState ? 5 : 11}
+                style={{ margin: '10px 5px' }}
               >
-                <Typography variant='h6' style={{ padding: '10px 20px' }}>
-                  Zlecenia pozyskane
-                  {plusCommisions ? (
-                    <Chip
-                      label={plusCommisions.length}
-                      style={{ marginLeft: '10px' }}
-                    />
-                  ) : null}
-                </Typography>
-                <Divider light />
-                <List>{plusList}</List>
-              </Paper>
-            </Grid>
-            <Grid
-              item
-              xs={11}
-              lg={checkSize()}
-              xl={companyState ? 5 : 11}
-              style={{ margin: '10px 5px' }}
-            >
-              <Paper
-                elevation={3}
-                style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}
-              >
-                <Typography variant='h6' style={{ padding: '10px 20px' }}>
-                  Zlecenia utracone
-                  {minusCommisions ? (
-                    <Chip
-                      label={minusCommisions.length}
-                      style={{ marginLeft: '10px' }}
-                    />
-                  ) : null}
-                </Typography>
+                <Paper
+                  elevation={3}
+                  style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}
+                >
+                  <Typography variant='h6' style={{ padding: '10px 20px' }}>
+                    Zlecenia utracone
+                    {minusCommisions ? (
+                      <Chip
+                        label={minusCommisions.length}
+                        style={{ marginLeft: '10px' }}
+                      />
+                    ) : null}
+                  </Typography>
 
-                <Divider light />
-                <List>{minusList}</List>
-              </Paper>
+                  <Divider light />
+                  <List>{minusList}</List>
+                </Paper>
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+          <DeleteConfirmationDialog
+            deleteConfirmationDialogVisible={deleteConfirmationDialogVisible}
+            setDeleteConfirmationDialogVisible={
+              setDeleteConfirmationDialogVisible
+            }
+            handleDeleteData={handleDeleteData}
+            itemToDelete={itemToDelete}
+          />
+        </>
       ) : (
         <Redirect to='/' />
       )}

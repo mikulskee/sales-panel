@@ -3,6 +3,9 @@ import React, { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
+  const [successDeleteSnackbarOpen, setSuccessDeleteSnackbarOpen] = useState(
+    false
+  );
   const [successSnackbarOpen, setSuccessSnackbarOpen] = useState(false);
   const [failSnackbarOpen, setFailSnackbarOpen] = useState(false);
   const [personalStateVisible, setPersonalStateVisible] = useState(true);
@@ -21,6 +24,8 @@ const AppContextProvider = (props) => {
         setPersonalStateVisible,
         companyGeneralStateVisible,
         setCompanyGeneralStateVisible,
+        successDeleteSnackbarOpen,
+        setSuccessDeleteSnackbarOpen,
       }}
     >
       {props.children}

@@ -14,6 +14,8 @@ const Alert = (props) => {
 
 const MainDashboard = () => {
   const {
+    setSuccessDeleteSnackbarOpen,
+    successDeleteSnackbarOpen,
     successSnackbarOpen,
     setSuccessSnackbarOpen,
     setCompanyGeneralStateVisible,
@@ -27,6 +29,7 @@ const MainDashboard = () => {
       return;
     }
     setSuccessSnackbarOpen(false);
+    setSuccessDeleteSnackbarOpen(false);
   };
 
   const handleVisibility = (component) => () => {
@@ -87,6 +90,16 @@ const MainDashboard = () => {
       >
         <Alert onClose={handleClose} severity='success'>
           Pomyślnie dodano zlecenie!
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        open={successDeleteSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+      >
+        <Alert onClose={handleClose} severity='success'>
+          Pomyślnie usunięto zlecenie!
         </Alert>
       </Snackbar>
     </>
