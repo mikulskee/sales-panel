@@ -44,7 +44,7 @@ const MainDashboard = () => {
   }, []);
 
   useEffect(() => {
-    if (companyState) {
+    if (companyState && personalData) {
       setDataForCompanyMonthlyState(
         companyState.filter((item) => item.timestamp === currentTimestamp)
       );

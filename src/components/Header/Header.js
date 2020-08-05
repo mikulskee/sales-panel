@@ -31,6 +31,7 @@ const Header = (props) => {
       return;
     }
   };
+
   return (
     <Wrapper>
       <Grid container style={{ padding: '20px' }} justify='space-between'>
@@ -48,9 +49,22 @@ const Header = (props) => {
                   style={{
                     color: 'black',
                     backgroundColor: `${findChipColor(personalData.initials)}`,
+                    width: '60px',
+                    height: '60px',
                   }}
+                  src={
+                    users.filter((u) => u.initials === personalData.initials)
+                      .length > 0
+                      ? users.filter(
+                          (u) => u.initials === personalData.initials
+                        )[0].img
+                      : null
+                  }
                 >
-                  {personalData.initials}
+                  {users.filter((u) => u.initials === personalData.initials)
+                    .length > 0
+                    ? null
+                    : personalData.initials}
                 </Avatar>
               ) : (
                 personalData

@@ -15,11 +15,7 @@ const CompanyState = () => {
 
   useEffect(() => {
     if (personalData) {
-      if (personalData.initials === 'AK') {
-        setAdmin('admin');
-      } else {
-        setAdmin('');
-      }
+      setAdmin(personalData.admin);
     }
   }, [personalData]);
 

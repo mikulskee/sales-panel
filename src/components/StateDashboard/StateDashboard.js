@@ -16,6 +16,7 @@ import {
   Chip,
   Box,
   CircularProgress,
+  Badge,
 } from '@material-ui/core';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
@@ -165,6 +166,7 @@ const StateDashboard = (props) => {
                 overflow: 'hidden',
               }}
             />
+
             <Box component='span' style={{ width: '13%', textAlign: 'center' }}>
               {item.plus ? (
                 <Chip
@@ -175,10 +177,25 @@ const StateDashboard = (props) => {
             </Box>
             <Box component='span' style={{ width: '14%', textAlign: 'center' }}>
               {item.user ? (
-                <Chip
-                  label={item.user}
-                  style={{ backgroundColor: `${findChipColor(item.user)}` }}
-                />
+                <>
+                  {users.filter((u) => u.initials === item.user)[0].img ? (
+                    <Badge badgeContent={item.user} color='primary'>
+                      <Avatar
+                        style={{ margin: '0 auto' }}
+                        src={
+                          users.filter((u) => u.initials === item.user)[0].img
+                        }
+                      />
+                    </Badge>
+                  ) : (
+                    <Chip
+                      label={item.user}
+                      style={{
+                        backgroundColor: `${findChipColor(item.user)}`,
+                      }}
+                    />
+                  )}
+                </>
               ) : null}
             </Box>
             <Box component='span' style={{ width: '14%', textAlign: 'center' }}>
@@ -250,10 +267,23 @@ const StateDashboard = (props) => {
             </Box>
             <Box component='span' style={{ width: '12%', textAlign: 'center' }}>
               {item.user ? (
-                <Chip
-                  label={item.user}
-                  style={{ backgroundColor: `${findChipColor(item.user)}` }}
-                />
+                <>
+                  {users.filter((u) => u.initials === item.user)[0].img ? (
+                    <Badge badgeContent={item.user} color='primary'>
+                      <Avatar
+                        style={{ margin: '0 auto' }}
+                        src={
+                          users.filter((u) => u.initials === item.user)[0].img
+                        }
+                      />
+                    </Badge>
+                  ) : (
+                    <Chip
+                      label={item.user}
+                      style={{ backgroundColor: `${findChipColor(item.user)}` }}
+                    />
+                  )}
+                </>
               ) : null}
             </Box>
             <Box component='span' style={{ width: '18%', textAlign: 'center' }}>
