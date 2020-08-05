@@ -476,7 +476,14 @@ const StateDashboard = (props) => {
                     ) : null}
                   </Typography>
                   <Divider light />
-                  <List>{plusList}</List>
+                  <List
+                    style={{
+                      maxHeight: `${company ? '575px' : '260px'}`,
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {plusList}
+                  </List>
                 </Paper>
               </Grid>
               <Grid
@@ -501,7 +508,14 @@ const StateDashboard = (props) => {
                   </Typography>
 
                   <Divider light />
-                  <List>{minusList}</List>
+                  <List
+                    style={{
+                      maxHeight: `${company ? '575px' : '260px'}`,
+                      overflowY: 'auto',
+                    }}
+                  >
+                    {minusList}
+                  </List>
                 </Paper>
               </Grid>
             </Grid>
