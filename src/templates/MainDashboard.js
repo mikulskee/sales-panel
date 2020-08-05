@@ -175,16 +175,16 @@ const MainDashboard = () => {
           lg={companyGeneralStateVisible === 'true' ? 5 : 10}
           style={{ height: 'fit-content' }}
         >
-          {personalStateVisible === 'true' ? (
-            <PersonalState
-              currentTimestamp={currentTimestamp}
-              data={dataForPersonalState}
-            />
-          ) : null}
           {companyMonthlyStateVisible === 'true' ? (
             <CompanyStateMonthly
               currentTimestamp={currentTimestamp}
               data={dataForCompanyMonthlyState}
+            />
+          ) : null}
+          {personalStateVisible === 'true' ? (
+            <PersonalState
+              currentTimestamp={currentTimestamp}
+              data={dataForPersonalState}
             />
           ) : null}
         </Grid>

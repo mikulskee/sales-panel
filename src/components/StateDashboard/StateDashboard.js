@@ -234,24 +234,27 @@ const StateDashboard = (props) => {
                 />
               )}
             </Box>
-
-            {admin ? (
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge='end'
-                  aria-label='create'
-                  onClick={handleOpenEditDialog(item)}
-                >
-                  <CreateIcon />
-                </IconButton>
-                <IconButton
-                  edge='end'
-                  aria-label='delete'
-                  onClick={handleOpenDeleteDialog(item)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
+            {company ? (
+              <>
+                {admin ? (
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge='end'
+                      aria-label='create'
+                      onClick={handleOpenEditDialog(item)}
+                    >
+                      <CreateIcon />
+                    </IconButton>
+                    <IconButton
+                      edge='end'
+                      aria-label='delete'
+                      onClick={handleOpenDeleteDialog(item)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                ) : null}
+              </>
             ) : null}
           </ListItem>
         );
@@ -322,24 +325,27 @@ const StateDashboard = (props) => {
                 />
               )}
             </Box>
-            {admin ? (
-              <ListItemSecondaryAction>
-                <IconButton
-                  edge='end'
-                  aria-label='create'
-                  onClick={handleOpenEditDialog(item)}
-                >
-                  <CreateIcon />
-                </IconButton>
-                <IconButton
-                  edge='end'
-                  aria-label='delete'
-                  onClick={handleOpenDeleteDialog(item)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            ) : null}
+
+            <>
+              {admin ? (
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge='end'
+                    aria-label='create'
+                    onClick={handleOpenEditDialog(item)}
+                  >
+                    <CreateIcon />
+                  </IconButton>
+                  <IconButton
+                    edge='end'
+                    aria-label='delete'
+                    onClick={handleOpenDeleteDialog(item)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              ) : null}
+            </>
           </ListItem>
         );
       });
@@ -454,33 +460,54 @@ const StateDashboard = (props) => {
             <Grid container justify='center' style={{ margin: '20px auto' }}>
               {companyState ? (
                 <Grid container justify='center'>
-                  <Grid
-                    item
-                    xs={3}
-                    lg={5}
-                    xl={3}
-                    style={{ margin: '10px 5px' }}
-                  >
-                    <Paper
-                      elevation={3}
-                      style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
+                  {admin ? (
+                    <Grid
+                      item
+                      xs={3}
+                      lg={5}
+                      xl={3}
+                      style={{ margin: '10px 5px' }}
                     >
-                      <Typography
-                        variant='h6'
-                        style={{ position: 'relative', paddingBottom: '10px' }}
+                      <Paper
+                        elevation={3}
+                        style={{ padding: '20px', backgroundColor: '#d5f5ff' }}
                       >
-                        Stan całkowity{' '}
+                        <Typography
+                          variant='h6'
+                          style={{
+                            position: 'relative',
+                            paddingBottom: '10px',
+                          }}
+                        >
+                          Stan całkowity{' '}
+                          {plusCommisions ? (
+                            <Chip
+                              style={{ position: 'absolute', right: 0 }}
+                              label={`${plusCommisions.length} / ${plannableClientsAmount}`}
+                            />
+                          ) : null}
+                        </Typography>
+                        <Divider light />
+                        <CircularProgressWithLabel
+                          size={80}
+                          value={percentage}
+                        />
+
                         {plusCommisions ? (
-                          <Chip
-                            style={{ position: 'absolute', right: 0 }}
-                            label={`${plusCommisions.length} / ${plannableClientsAmount}`}
-                          />
+                          <Typography style={{ textAlign: 'center' }}>
+                            {(plusCommisions.length * 11540).toLocaleString()}
+                            zł /{' '}
+                            <span style={{ fontWeight: 'bold' }}>
+                              {(
+                                plannableClientsAmount * 11540
+                              ).toLocaleString()}
+                              zł
+                            </span>
+                          </Typography>
                         ) : null}
-                      </Typography>
-                      <Divider light />
-                      <CircularProgressWithLabel size={80} value={percentage} />
-                    </Paper>
-                  </Grid>
+                      </Paper>
+                    </Grid>
+                  ) : null}
                 </Grid>
               ) : null}
               <Grid

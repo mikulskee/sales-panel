@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import MomentUtils from '@date-io/moment';
 import styled from 'styled-components';
 import firebase from '../../../firebase';
 import moment from 'moment';
@@ -21,8 +22,13 @@ import {
   Checkbox,
   Divider,
 } from '@material-ui/core';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import { PersonalDataContext } from '../../../contexts/PersonalDataContext';
 import { AppContext } from '../../../contexts/AppContext';
+import { UsersContext } from '../../../contexts/UsersContext';
 
 const StyledForm = styled.form`
   & * {
@@ -48,22 +54,41 @@ const StyledDivider = styled(Divider)`
 `;
 const ClientManagment = (props) => {
   const [titleValue, setTitleValue] = useState('');
-  const [dateValue, setDateValue] = useState('');
+  const [oldCommision, setOldCommision] = useState(false);
   const [minusReason, setMinusReason] = useState('');
   const [plusReason, setPlusReason] = useState('');
   const [radioValue, setRadioValue] = useState('');
+  const [temporaryCommision, setTemporaryCommision] = useState(false);
+  const [
+    temporaryCommisionRadioValue,
+    setTemporaryCommisionRadioValue,
+  ] = useState('');
+  const [commisionStartDate, setCommisionStartDate] = useState(
+    moment(new Date())
+  );
+
   const [errorTitle, setErrorTitle] = useState(false);
   const [errorReason, setErrorReason] = useState(false);
-  const [oldCommision, setOldCommision] = useState(false);
   const [addToCurrentMonth, setAddToCurrentMonth] = useState(false);
+  const [radioUsersOptions, setRadioUsersOptions] = useState();
+  const [
+    radioTemporaryCommisionUsersOptions,
+    setRadioTemporaryCommisionUsersOptions,
+  ] = useState();
+
   const { admin, handleClose, dataToEdit, setEditDialogVisible } = props;
   const { personalData } = useContext(PersonalDataContext);
   const { setSuccessSnackbarOpen } = useContext(AppContext);
+  const { users } = useContext(UsersContext);
+
+  useEffect(() => {
+    console.log(moment(commisionStartDate).add(14, 'days').format('L'));
+  });
 
   useEffect(() => {
     if (dataToEdit) {
       setTitleValue(dataToEdit.title);
-      setDateValue(dataToEdit.date);
+      setCommisionStartDate(dataToEdit.rawDate);
       setRadioValue(dataToEdit.user);
       if (dataToEdit.timestamp) {
         setOldCommision(false);
@@ -87,21 +112,75 @@ const ClientManagment = (props) => {
     }
   }, [dataToEdit]);
 
+  useEffect(() => {
+    if (users) {
+      setRadioUsersOptions(
+        users.map((user) => {
+          return (
+            <FormControlLabel
+              key={user.img}
+              value={user.initials}
+              control={<Radio />}
+              label={
+                <StyledChip
+                  label={user.initials}
+                  style={{
+                    backgroundColor: `${user.color}`,
+                  }}
+                />
+              }
+              labelPlacement='top'
+            />
+          );
+        })
+      );
+    }
+  }, [setRadioUsersOptions, users]);
+
+  useEffect(() => {
+    if (radioValue) {
+      setRadioTemporaryCommisionUsersOptions(
+        users
+          .filter((item) => item.initials !== radioValue)
+          .map((user) => {
+            return (
+              <FormControlLabel
+                key={user.img}
+                value={user.initials}
+                control={<Radio />}
+                label={
+                  <StyledChip
+                    label={user.initials}
+                    style={{
+                      backgroundColor: `${user.color}`,
+                    }}
+                  />
+                }
+                labelPlacement='top'
+              />
+            );
+          })
+      );
+    }
+  }, [setRadioTemporaryCommisionUsersOptions, users, radioValue]);
+
   const handleCheckboxCurrentMonth = (event) => {
     setAddToCurrentMonth(event.target.checked);
   };
   const handleCheckboxChange = (event) => {
     setOldCommision(event.target.checked);
   };
-
+  const handleTemporaryCommisionCheckboxChange = (event) => {
+    setTemporaryCommision(event.target.checked);
+  };
+  const handleStartCommisionDateChange = (date) => {
+    setCommisionStartDate(date);
+  };
   const handleTitleChange = (event) => {
     if (errorTitle) {
       setErrorTitle(false);
     }
     setTitleValue(event.target.value);
-  };
-  const handleDateChange = (event) => {
-    setDateValue(event.target.value);
   };
   const handleReasonChange = (reason) => (event) => {
     if (errorReason) {
@@ -118,6 +197,9 @@ const ClientManagment = (props) => {
   const handleRadioChange = (event) => {
     setRadioValue(event.target.value);
   };
+  const handleTemporaryCommisionRadioChange = (event) => {
+    setTemporaryCommisionRadioValue(event.target.value);
+  };
 
   const setTimestamp = () => {
     if (oldCommision) {
@@ -128,6 +210,16 @@ const ClientManagment = (props) => {
       }
     } else {
       return moment(new Date()).format('MMMM YYYY');
+    }
+  };
+
+  const setReason = (reason) => {
+    if (reason === 'Brak') {
+      return '';
+    } else if (reason === '') {
+      return null;
+    } else {
+      return reason;
     }
   };
   const handleSubmit = () => {
@@ -146,52 +238,36 @@ const ClientManagment = (props) => {
     }
 
     if (!errorTitle && !errorReason) {
-      if (minusReason) {
-        const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
-        firebase
-          .firestore()
-          .collection(`company-state-general`)
-          .doc(id)
-          .set({
-            title: titleValue,
-            date: dateValue,
-            minus: minusReason,
-            user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: setTimestamp(),
-            id,
-          })
-          .then(() => setSuccessSnackbarOpen(true))
-          .catch((err) => console.log(err));
-
-        if (dataToEdit) {
-          setEditDialogVisible(false);
-        } else {
-          handleClose();
-        }
+      const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
+      firebase
+        .firestore()
+        .collection(`company-state-general`)
+        .doc(id)
+        .set({
+          title: titleValue,
+          date: moment(commisionStartDate).format('L'),
+          minus: setReason(minusReason),
+          plus: setReason(plusReason),
+          user: `${admin ? radioValue : personalData.initials}`,
+          temporaryCommision,
+          nextUser: temporaryCommisionRadioValue,
+          commisionChangeDate: moment(commisionStartDate)
+            .add(14, 'days')
+            .format('L'),
+          rawDate: `${commisionStartDate}`,
+          timestamp: setTimestamp(),
+          id,
+        })
+        .then(() => setSuccessSnackbarOpen(true))
+        .catch((err) => console.log(err));
+      if (dataToEdit) {
+        setEditDialogVisible(false);
       } else {
-        const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
-        firebase
-          .firestore()
-          .collection(`company-state-general`)
-          .doc(id)
-          .set({
-            title: titleValue,
-            date: dateValue,
-            plus: `${plusReason === 'Brak' ? '' : plusReason}`,
-            user: `${admin ? radioValue : personalData.initials}`,
-            timestamp: setTimestamp(),
-            id,
-          })
-          .then(() => setSuccessSnackbarOpen(true))
-          .catch((err) => console.log(err));
-        if (dataToEdit) {
-          setEditDialogVisible(false);
-        } else {
-          handleClose();
-        }
+        handleClose();
       }
     }
   };
+
   return (
     <Paper
       style={{
@@ -238,17 +314,22 @@ const ClientManagment = (props) => {
             ) : null}
           </Grid>
           <Grid item>
-            <FormControl variant='outlined'>
-              <InputLabel htmlFor='date'>Data</InputLabel>
-              <OutlinedInput
-                id='date'
-                label='Data'
-                variant='outlined'
-                style={{ width: '240px' }}
-                value={dateValue}
-                onChange={handleDateChange}
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant='inline'
+                format='L'
+                margin='normal'
+                id='date-picker-inline'
+                label='Start zlecenia'
+                value={commisionStartDate}
+                onChange={handleStartCommisionDateChange}
+                style={{ margin: '10px 0 20px' }}
+                KeyboardButtonProps={{
+                  'aria-label': 'change date',
+                }}
               />
-            </FormControl>
+            </MuiPickersUtilsProvider>
           </Grid>
           {admin ? (
             <>
@@ -324,7 +405,7 @@ const ClientManagment = (props) => {
                   label='MinusReason'
                 >
                   <MenuItem value='Brak'>Brak</MenuItem>
-                  <MenuItem value={'KUNDI'}>KUNDI</MenuItem>
+                  <MenuItem value={'K'}>K</MenuItem>
                   <MenuItem value={'TOD'}>TOD</MenuItem>
                   <MenuItem value={'DLU'}>DLU</MenuItem>
                 </Select>
@@ -345,10 +426,7 @@ const ClientManagment = (props) => {
 
           {admin ? (
             <>
-              <FormControl
-                component='fieldset'
-                style={{ margin: '20px 0 20px' }}
-              >
+              <FormControl component='fieldset' style={{ margin: '20px 0' }}>
                 <Typography
                   variant={'subtitle2'}
                   gutterBottom
@@ -363,43 +441,36 @@ const ClientManagment = (props) => {
                   onChange={handleRadioChange}
                   style={{ flexDirection: 'row' }}
                 >
-                  <FormControlLabel
-                    value='QA'
-                    control={<Radio />}
-                    label={
-                      <StyledChip
-                        label='QA'
-                        style={{
-                          backgroundColor: '#3df4fd',
-                        }}
-                      />
-                    }
-                    labelPlacement='top'
-                  />
-                  <FormControlLabel
-                    value='KK'
-                    control={<Radio />}
-                    label={
-                      <StyledChip
-                        label='KK'
-                        style={{ backgroundColor: '#b4f56c' }}
-                      />
-                    }
-                    labelPlacement='top'
-                  />
-                  <FormControlLabel
-                    value='VF'
-                    control={<Radio />}
-                    label={
-                      <StyledChip
-                        label='VF'
-                        style={{ backgroundColor: '#a8b5f5' }}
-                      />
-                    }
-                    labelPlacement='top'
-                  />
+                  {radioUsersOptions}
                 </RadioGroup>
               </FormControl>
+
+              {radioValue ? (
+                <FormControlLabel
+                  style={{ margin: '-10px 0 20px' }}
+                  control={
+                    <Checkbox
+                      checked={temporaryCommision}
+                      onChange={handleTemporaryCommisionCheckboxChange}
+                      name='temporaryCommision'
+                      color='primary'
+                    />
+                  }
+                  label='Po 14 dniach:'
+                />
+              ) : null}
+              {temporaryCommision ? (
+                <RadioGroup
+                  aria-label='nextUser'
+                  name='user2'
+                  value={temporaryCommisionRadioValue}
+                  onChange={handleTemporaryCommisionRadioChange}
+                  style={{ flexDirection: 'row', margin: '0px 0 20px' }}
+                >
+                  {radioTemporaryCommisionUsersOptions}
+                </RadioGroup>
+              ) : null}
+
               <StyledDivider />
             </>
           ) : null}
