@@ -37,6 +37,7 @@ const MainDashboard = () => {
     setDataForCompanyMonthlyState,
   ] = useState();
   const [dataForPersonalState, setDataForPersonalState] = useState();
+  const [dataForUnactiveClients, setDataForUnactiveClients] = useState();
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
   useEffect(() => {
@@ -47,6 +48,12 @@ const MainDashboard = () => {
     if (companyState && personalData) {
       setDataForCompanyMonthlyState(
         companyState.filter((item) => item.timestamp === currentTimestamp)
+      );
+
+      setDataForUnactiveClients(
+        companyState
+          .filter((item) => item.minus)
+          .filter((item) => item.minus === 'DLU')
       );
 
       if (personalData.admin) {
@@ -181,7 +188,9 @@ const MainDashboard = () => {
             />
           ) : null}
         </Grid>
-        {companyGeneralStateVisible === 'true' ? <CompanyState /> : null}
+        {companyGeneralStateVisible === 'true' ? (
+          <CompanyState dataForUnactiveClients={dataForUnactiveClients} />
+        ) : null}
       </Grid>
       <Tooltips />
       <Snackbar

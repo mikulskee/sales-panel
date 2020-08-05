@@ -27,6 +27,7 @@ import { AppContext } from '../../contexts/AppContext';
 import { PersonalDataContext } from '../../contexts/PersonalDataContext';
 import DeleteConfirmationDialog from '../DeleteConfirmationDialog/DeleteConfirmationDialog';
 import EditDialog from '../EditDialog/EditDialog';
+import UnactiveCients from '../UnactiveClients/UnactiveClients';
 
 const StateDashboard = (props) => {
   const { personalData } = useContext(PersonalDataContext);
@@ -41,7 +42,7 @@ const StateDashboard = (props) => {
     deleteConfirmationDialogVisible,
     setDeleteConfirmationDialogVisible,
   ] = useState(false);
-  const [plannableClientsAmount] = useState(90);
+  const [plannableClientsAmount] = useState(78);
   const [editDialogVisible, setEditDialogVisible] = useState(false);
   const [dataToEdit, setDataToEdit] = useState();
   const [overall, setOverall] = useState(null);
@@ -52,7 +53,14 @@ const StateDashboard = (props) => {
   const [minusList, setMinusList] = useState();
   const [companyState, setCompanyState] = useState(false);
   const [itemToDelete, setItemToDelete] = useState();
-  const { data, admin, title, company, subtitle } = props;
+  const {
+    data,
+    admin,
+    title,
+    company,
+    subtitle,
+    dataForUnactiveClients,
+  } = props;
 
   const handleOpenEditDialog = (data) => (event) => {
     setEditDialogVisible(true);
@@ -126,10 +134,30 @@ const StateDashboard = (props) => {
   useEffect(() => {
     if (data) {
       setPlusCommisions(
-        data.filter((item) => (item.plus === '' || item.plus ? item : null))
+        data
+          .filter((item) => (item.plus === '' || item.plus ? item : null))
+          .sort(function (a, b) {
+            if (a.title < b.title) {
+              return -1;
+            }
+            if (a.title > b.title) {
+              return 1;
+            }
+            return 0;
+          })
       );
       setMinusCommisions(
-        data.filter((item) => (item.minus === '' || item.minus ? item : null))
+        data
+          .filter((item) => (item.minus === '' || item.minus ? item : null))
+          .sort(function (a, b) {
+            if (a.title < b.title) {
+              return -1;
+            }
+            if (a.title > b.title) {
+              return 1;
+            }
+            return 0;
+          })
       );
     }
   }, [data]);
@@ -464,10 +492,13 @@ const StateDashboard = (props) => {
               >
                 <Paper
                   elevation={3}
-                  style={{ padding: '20px 0', backgroundColor: '#d5ffde' }}
+                  style={{
+                    padding: '20px 0',
+                    backgroundColor: `${company ? '#d5f5ff' : '#d5ffde'}`,
+                  }}
                 >
                   <Typography variant='h6' style={{ padding: '10px 20px' }}>
-                    Zlecenia pozyskane
+                    {company ? 'Obsługiwani klienci' : 'Zlecenia pozyskane'}
                     {plusCommisions ? (
                       <Chip
                         label={plusCommisions.length}
@@ -486,38 +517,53 @@ const StateDashboard = (props) => {
                   </List>
                 </Paper>
               </Grid>
-              <Grid
-                item
-                xs={11}
-                lg={checkSize()}
-                xl={companyState ? 5 : 11}
-                style={{ margin: '10px 5px' }}
-              >
-                <Paper
-                  elevation={3}
-                  style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}
-                >
-                  <Typography variant='h6' style={{ padding: '10px 20px' }}>
-                    Zlecenia utracone
-                    {minusCommisions ? (
-                      <Chip
-                        label={minusCommisions.length}
-                        style={{ marginLeft: '10px' }}
-                      />
-                    ) : null}
-                  </Typography>
 
-                  <Divider light />
-                  <List
-                    style={{
-                      maxHeight: `${company ? '575px' : '260px'}`,
-                      overflowY: 'auto',
-                    }}
+              {company ? (
+                <UnactiveCients
+                  checkSize={checkSize}
+                  companyState={companyState}
+                  company={company}
+                  dataForUnactiveClients={dataForUnactiveClients}
+                  users={users}
+                  findChipColor={findChipColor}
+                  admin={admin}
+                  handleOpenDeleteDialog={handleOpenDeleteDialog}
+                  handleOpenEditDialog={handleOpenEditDialog}
+                />
+              ) : (
+                <Grid
+                  item
+                  xs={11}
+                  lg={checkSize()}
+                  xl={companyState ? 5 : 11}
+                  style={{ margin: '10px 5px' }}
+                >
+                  <Paper
+                    elevation={3}
+                    style={{ padding: '20px 0', backgroundColor: '#ffcbcb' }}
                   >
-                    {minusList}
-                  </List>
-                </Paper>
-              </Grid>
+                    <Typography variant='h6' style={{ padding: '10px 20px' }}>
+                      Zlecenia utracone
+                      {minusCommisions ? (
+                        <Chip
+                          label={minusCommisions.length}
+                          style={{ marginLeft: '10px' }}
+                        />
+                      ) : null}
+                    </Typography>
+
+                    <Divider light />
+                    <List
+                      style={{
+                        maxHeight: `${company ? '575px' : '260px'}`,
+                        overflowY: 'auto',
+                      }}
+                    >
+                      {minusList}
+                    </List>
+                  </Paper>
+                </Grid>
+              )}
             </Grid>
           </Grid>
           <DeleteConfirmationDialog
