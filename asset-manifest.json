@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/sales-panel/static/css/main.f95a6a48.chunk.css",
+    "main.js": "/sales-panel/static/js/main.34d80a71.chunk.js",
+    "main.js.map": "/sales-panel/static/js/main.34d80a71.chunk.js.map",
+    "runtime-main.js": "/sales-panel/static/js/runtime-main.612ebae2.js",
+    "runtime-main.js.map": "/sales-panel/static/js/runtime-main.612ebae2.js.map",
+    "static/js/2.ef4ca5bf.chunk.js": "/sales-panel/static/js/2.ef4ca5bf.chunk.js",
+    "static/js/2.ef4ca5bf.chunk.js.map": "/sales-panel/static/js/2.ef4ca5bf.chunk.js.map",
+    "index.html": "/sales-panel/index.html",
+    "precache-manifest.37def832975370f9467d5fb5d0766986.js": "/sales-panel/precache-manifest.37def832975370f9467d5fb5d0766986.js",
+    "service-worker.js": "/sales-panel/service-worker.js",
+    "static/css/main.f95a6a48.chunk.css.map": "/sales-panel/static/css/main.f95a6a48.chunk.css.map",
+    "static/js/2.ef4ca5bf.chunk.js.LICENSE.txt": "/sales-panel/static/js/2.ef4ca5bf.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.612ebae2.js",
+    "static/js/2.ef4ca5bf.chunk.js",
+    "static/css/main.f95a6a48.chunk.css",
+    "static/js/main.34d80a71.chunk.js"
+  ]
+}
