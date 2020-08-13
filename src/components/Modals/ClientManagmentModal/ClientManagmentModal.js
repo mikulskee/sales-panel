@@ -82,10 +82,6 @@ const ClientManagment = (props) => {
   const { users } = useContext(UsersContext);
 
   useEffect(() => {
-    console.log(moment(commisionStartDate).add(14, 'days').format('L'));
-  });
-
-  useEffect(() => {
     if (dataToEdit) {
       setTitleValue(dataToEdit.title);
       setCommisionStartDate(dataToEdit.rawDate);

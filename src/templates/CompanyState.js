@@ -6,7 +6,7 @@ import { AppContext } from '../contexts/AppContext';
 import { Paper, Grid } from '@material-ui/core';
 
 const CompanyState = (props) => {
-  const { dataForUnactiveClients } = props;
+  const { dataForUnactiveClients, currentTimestamp } = props;
   const [admin, setAdmin] = useState('');
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
@@ -48,6 +48,7 @@ const CompanyState = (props) => {
           dataForUnactiveClients={dataForUnactiveClients}
           admin={admin}
           company={'true'}
+          currentTimestamp={currentTimestamp}
         />
       </Paper>
     </Grid>

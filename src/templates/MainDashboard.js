@@ -189,10 +189,16 @@ const MainDashboard = () => {
           ) : null}
         </Grid>
         {companyGeneralStateVisible === 'true' ? (
-          <CompanyState dataForUnactiveClients={dataForUnactiveClients} />
+          <CompanyState
+            dataForUnactiveClients={dataForUnactiveClients}
+            currentTimestamp={currentTimestamp}
+          />
         ) : null}
       </Grid>
-      <Tooltips />
+      <Tooltips
+        setCurrentTimestamp={setCurrentTimestamp}
+        currentTimestamp={currentTimestamp}
+      />
       <Snackbar
         open={successSnackbarOpen}
         autoHideDuration={6000}

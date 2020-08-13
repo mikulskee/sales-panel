@@ -30,6 +30,7 @@ const CompanyStateMonthly = (props) => {
           subtitle={`Dane na ${currentTimestamp}`}
           data={data}
           admin={admin}
+          currentTimestamp={currentTimestamp}
         />
       </Paper>
     </Grid>
