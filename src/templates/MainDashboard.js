@@ -60,7 +60,7 @@ const MainDashboard = () => {
         setDataForPersonalState(
           companyState
             .filter((item) => item.timestamp === currentTimestamp)
-            .filter((item) => item.user === 'QA')
+            .filter((item) => item.user === 'Q')
         );
       } else {
         setDataForPersonalState(

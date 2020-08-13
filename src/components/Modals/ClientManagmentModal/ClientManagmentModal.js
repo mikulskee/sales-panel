@@ -218,7 +218,6 @@ const ClientManagment = (props) => {
       return reason;
     }
   };
-
   const isCommisionChangeDate = (temporaryCommision, commisionStartDate) => {
     if (temporaryCommision) {
       return new Date(
@@ -271,6 +270,9 @@ const ClientManagment = (props) => {
         .then(() => setSuccessSnackbarOpen(true))
         .catch((err) => console.log(err));
 
+      if (setReason(minusReason) === 'DLU') {
+      }
+      // console.log(dataToEdit);
       // console.log({
       //   title: titleValue,
       //   date: moment(commisionStartDate).format('L'),
@@ -288,7 +290,9 @@ const ClientManagment = (props) => {
       //   rawDate: `${commisionStartDate}`,
       //   timestamp: setTimestamp(commisionStartDate),
       //   id,
+      //   dluMinusStart: moment(commisionStartDate).format('L'),
       // });
+
       if (dataToEdit) {
         setEditDialogVisible(false);
       } else {

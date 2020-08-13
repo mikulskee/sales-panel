@@ -23,7 +23,7 @@ const Header = (props) => {
   const findChipColor = (userInitials) => {
     if (personalData) {
       if (userInitials === 'AK') {
-        return users.filter((user) => user.initials === 'QA')[0].color;
+        return users.filter((user) => user.initials === 'Q')[0].color;
       } else {
         return users.filter((user) => user.initials === userInitials)[0].color;
       }

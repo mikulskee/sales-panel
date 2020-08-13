@@ -130,7 +130,6 @@ const StateDashboard = (props) => {
   };
 
   const setTemporaryBadge = (item, company) => {
-    console.log(item.commisionChangeDate - new Date().getTime());
     const betweenCommisionChangeDateAndPresentTime =
       item.commisionChangeDate - new Date().getTime();
     const days = betweenCommisionChangeDateAndPresentTime / 1000 / 60 / 60 / 24;
@@ -145,10 +144,10 @@ const StateDashboard = (props) => {
           return '0';
         }
       } else {
-        return days.toFixed();
+        return `${item.nextUser}${days.toFixed()}`;
       }
     } else {
-      return null;
+      return `${item.nextUser}`;
     }
   };
 
