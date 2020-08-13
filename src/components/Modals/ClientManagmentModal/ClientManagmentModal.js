@@ -201,15 +201,15 @@ const ClientManagment = (props) => {
     setTemporaryCommisionRadioValue(event.target.value);
   };
 
-  const setTimestamp = () => {
+  const setTimestamp = (date) => {
     if (oldCommision) {
       if (addToCurrentMonth) {
-        return moment(new Date()).format('MMMM YYYY');
+        return moment(date).format('MMMM YYYY');
       } else {
         return '';
       }
     } else {
-      return moment(new Date()).format('MMMM YYYY');
+      return moment(date).format('MMMM YYYY');
     }
   };
 
@@ -223,13 +223,6 @@ const ClientManagment = (props) => {
     }
   };
 
-  const isCommisionStartDate = (temporaryCommision, commisionStartDate) => {
-    if (temporaryCommision) {
-      return new Date(commisionStartDate).getTime();
-    } else {
-      return null;
-    }
-  };
   const isCommisionChangeDate = (temporaryCommision, commisionStartDate) => {
     if (temporaryCommision) {
       return new Date(
@@ -240,6 +233,7 @@ const ClientManagment = (props) => {
     }
   };
   const handleSubmit = () => {
+    console.log(moment(commisionStartDate).isBefore(new Date(), 'month'));
     if (!titleValue && !minusReason && !plusReason) {
       setErrorTitle(true);
       setErrorReason(true);
@@ -269,16 +263,13 @@ const ClientManagment = (props) => {
           temporaryCommision,
           firstUser: `${admin ? radioValue : personalData.initials}`,
           nextUser: temporaryCommisionRadioValue,
-          commisionStartDate: isCommisionStartDate(
-            temporaryCommision,
-            commisionStartDate
-          ),
+          commisionStartDate: new Date(commisionStartDate).getTime(),
           commisionChangeDate: isCommisionChangeDate(
             temporaryCommision,
             commisionStartDate
           ),
           rawDate: `${commisionStartDate}`,
-          timestamp: setTimestamp(),
+          timestamp: setTimestamp(commisionStartDate),
           id,
         })
         .then(() => setSuccessSnackbarOpen(true))
@@ -291,17 +282,15 @@ const ClientManagment = (props) => {
       //   plus: setReason(plusReason),
       //   user: `${admin ? radioValue : personalData.initials}`,
       //   temporaryCommision,
+      //   firstUser: `${admin ? radioValue : personalData.initials}`,
       //   nextUser: temporaryCommisionRadioValue,
-      //   commisionStartDate: isCommisionStartDate(
-      //     temporaryCommision,
-      //     commisionStartDate
-      //   ),
+      //   commisionStartDate: new Date(commisionStartDate).getTime(),
       //   commisionChangeDate: isCommisionChangeDate(
       //     temporaryCommision,
       //     commisionStartDate
       //   ),
       //   rawDate: `${commisionStartDate}`,
-      //   timestamp: setTimestamp(),
+      //   timestamp: setTimestamp(commisionStartDate),
       //   id,
       // });
       if (dataToEdit) {

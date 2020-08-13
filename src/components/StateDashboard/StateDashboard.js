@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Redirect } from 'react-router-dom';
 import firebase from '../../firebase';
+import moment from 'moment';
+import 'moment/locale/pl';
 import {
   Typography,
   Paper,
@@ -192,6 +194,13 @@ const StateDashboard = (props) => {
             }
             return 0;
           })
+          .filter(
+            (item) =>
+              !moment(item.commisionStartDate).isAfter(
+                `${moment(new Date())}`,
+                'month'
+              )
+          )
       );
       setMinusCommisions(
         data
