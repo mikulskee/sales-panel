@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import firebase from '../firebase';
 import moment from 'moment';
 import 'moment/locale/pl';
 import PersonalState from './PersonalState';
@@ -40,6 +41,57 @@ const MainDashboard = () => {
   const [dataForUnactiveClients, setDataForUnactiveClients] = useState();
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
+
+  useEffect(() => {
+    if (companyState) {
+      const recordToEdit = companyState.filter((item) => item.dluMinusStart)[0];
+
+      if (recordToEdit) {
+        if (
+          moment(new Date(recordToEdit.dluMinusStart)).format('MMMM YYYY') ===
+          currentTimestamp
+        ) {
+          if (!recordToEdit.minus) {
+            firebase
+              .firestore()
+              .collection(`company-state-general`)
+              .doc(recordToEdit.id)
+              .set({
+                title: recordToEdit.title,
+                date: moment(recordToEdit.dluMinusStart).format('L'),
+                minus: 'DLU',
+                plus: null,
+                user: recordToEdit.user,
+                temporaryCommision: recordToEdit.temporaryCommision,
+                firstUser: recordToEdit.firstUser,
+                nextUser: recordToEdit.nextUser,
+                commisionStartDate: recordToEdit.dluMinusStart,
+                commisionChangeDate: recordToEdit.commisionChangeDate,
+                rawDate: recordToEdit.rawDate,
+                timestamp: moment(recordToEdit.dluMinusStart).format(
+                  'MMMM YYYY'
+                ),
+                id: recordToEdit.id,
+                dluMinusStart: recordToEdit.dluMinusStart,
+                originalData: recordToEdit,
+              })
+              .catch((err) => console.log(err));
+          } else return;
+        } else if (
+          moment(new Date(recordToEdit.dluMinusStart)).format('MMMM YYYY') !==
+            currentTimestamp &&
+          recordToEdit.minus
+        ) {
+          firebase
+            .firestore()
+            .collection(`company-state-general`)
+            .doc(recordToEdit.id)
+            .set(recordToEdit.originalData)
+            .catch((err) => console.log(err));
+        }
+      }
+    }
+  });
   useEffect(() => {
     setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
   }, []);

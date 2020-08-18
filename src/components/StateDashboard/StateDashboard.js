@@ -141,10 +141,10 @@ const StateDashboard = (props) => {
         if (company) {
           return null;
         } else {
-          return '0';
+          return `${item.nextUser} 0`;
         }
       } else {
-        return `${item.nextUser}${days.toFixed()}`;
+        return `${item.nextUser} ${days.toFixed()}`;
       }
     } else {
       return `${item.nextUser}`;
@@ -172,6 +172,14 @@ const StateDashboard = (props) => {
       }
     } else {
       return users.filter((u) => u.initials === item.user)[0].img;
+    }
+  };
+
+  const setFutureMonthDLU = (item) => {
+    if (item.dluMinusStart) {
+      return 'DLU';
+    } else {
+      return null;
     }
   };
   useEffect(() => {
@@ -260,10 +268,12 @@ const StateDashboard = (props) => {
 
             <Box component='span' style={{ width: '13%', textAlign: 'center' }}>
               {item.plus ? (
-                <Chip
-                  label={item.plus}
-                  style={{ backgroundColor: '#a2ef9d' }}
-                />
+                <Badge badgeContent={setFutureMonthDLU(item)} color='secondary'>
+                  <Chip
+                    label={item.plus}
+                    style={{ backgroundColor: '#a2ef9d' }}
+                  />
+                </Badge>
               ) : null}
             </Box>
             <Box component='span' style={{ width: '14%', textAlign: 'center' }}>

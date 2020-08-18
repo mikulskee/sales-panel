@@ -86,13 +86,14 @@ const ClientManagment = (props) => {
       setTitleValue(dataToEdit.title);
       setCommisionStartDate(dataToEdit.rawDate);
       setRadioValue(dataToEdit.user);
+      setTemporaryCommisionRadioValue(dataToEdit.nextUser);
+      setTemporaryCommision(dataToEdit.temporaryCommision);
       if (dataToEdit.timestamp) {
         setOldCommision(false);
       } else {
         setOldCommision(true);
       }
       if (typeof dataToEdit.plus === 'string') {
-        console.log('plus');
         if (dataToEdit.plus === '') {
           setPlusReason('Brak');
         } else {
@@ -104,6 +105,10 @@ const ClientManagment = (props) => {
         } else {
           setMinusReason(dataToEdit.minus);
         }
+      }
+
+      if (dataToEdit.dluMinusStart) {
+        setMinusReason('DLU');
       }
     }
   }, [dataToEdit]);
@@ -196,7 +201,6 @@ const ClientManagment = (props) => {
   const handleTemporaryCommisionRadioChange = (event) => {
     setTemporaryCommisionRadioValue(event.target.value);
   };
-
   const setTimestamp = (date) => {
     if (oldCommision) {
       if (addToCurrentMonth) {
@@ -208,7 +212,6 @@ const ClientManagment = (props) => {
       return moment(date).format('MMMM YYYY');
     }
   };
-
   const setReason = (reason) => {
     if (reason === 'Brak') {
       return '';
@@ -227,6 +230,7 @@ const ClientManagment = (props) => {
       return null;
     }
   };
+
   const handleSubmit = () => {
     console.log(moment(commisionStartDate).isBefore(new Date(), 'month'));
     if (!titleValue && !minusReason && !plusReason) {
@@ -245,53 +249,86 @@ const ClientManagment = (props) => {
 
     if (!errorTitle && !errorReason) {
       const id = `${dataToEdit ? dataToEdit.id : uuidv4()}`;
-      firebase
-        .firestore()
-        .collection(`company-state-general`)
-        .doc(id)
-        .set({
-          title: titleValue,
-          date: moment(commisionStartDate).format('L'),
-          minus: setReason(minusReason),
-          plus: setReason(plusReason),
-          user: `${admin ? radioValue : personalData.initials}`,
-          temporaryCommision,
-          firstUser: `${admin ? radioValue : personalData.initials}`,
-          nextUser: temporaryCommisionRadioValue,
-          commisionStartDate: new Date(commisionStartDate).getTime(),
-          commisionChangeDate: isCommisionChangeDate(
-            temporaryCommision,
-            commisionStartDate
-          ),
-          rawDate: `${commisionStartDate}`,
-          timestamp: setTimestamp(commisionStartDate),
-          id,
-        })
-        .then(() => setSuccessSnackbarOpen(true))
-        .catch((err) => console.log(err));
 
-      if (setReason(minusReason) === 'DLU') {
+      if (dataToEdit && minusReason === 'DLU') {
+        if (dataToEdit.timestamp !== setTimestamp(commisionStartDate)) {
+          firebase
+            .firestore()
+            .collection(`company-state-general`)
+            .doc(id)
+            .set({
+              title: titleValue,
+              date: dataToEdit.date,
+              minus: dataToEdit.minus,
+              plus: dataToEdit.plus,
+              user: `${admin ? radioValue : personalData.initials}`,
+              temporaryCommision,
+              firstUser: `${admin ? radioValue : personalData.initials}`,
+              nextUser: temporaryCommisionRadioValue,
+              commisionStartDate: dataToEdit.commisionStartDate,
+              commisionChangeDate: isCommisionChangeDate(
+                temporaryCommision,
+                commisionStartDate
+              ),
+              rawDate: `${commisionStartDate}`,
+              timestamp: dataToEdit.timestamp,
+              id,
+              dluMinusStart: new Date(commisionStartDate).getTime(),
+            })
+            .then(() => setSuccessSnackbarOpen(true))
+            .catch((err) => console.log(err));
+        } else {
+          firebase
+            .firestore()
+            .collection(`company-state-general`)
+            .doc(id)
+            .set({
+              title: titleValue,
+              date: moment(commisionStartDate).format('L'),
+              minus: setReason(minusReason),
+              plus: setReason(plusReason),
+              user: `${admin ? radioValue : personalData.initials}`,
+              temporaryCommision,
+              firstUser: `${admin ? radioValue : personalData.initials}`,
+              nextUser: temporaryCommisionRadioValue,
+              commisionStartDate: new Date(commisionStartDate).getTime(),
+              commisionChangeDate: isCommisionChangeDate(
+                temporaryCommision,
+                commisionStartDate
+              ),
+              rawDate: `${commisionStartDate}`,
+              timestamp: setTimestamp(commisionStartDate),
+              id,
+            })
+            .then(() => setSuccessSnackbarOpen(true))
+            .catch((err) => console.log(err));
+        }
+      } else {
+        firebase
+          .firestore()
+          .collection(`company-state-general`)
+          .doc(id)
+          .set({
+            title: titleValue,
+            date: moment(commisionStartDate).format('L'),
+            minus: setReason(minusReason),
+            plus: setReason(plusReason),
+            user: `${admin ? radioValue : personalData.initials}`,
+            temporaryCommision,
+            firstUser: `${admin ? radioValue : personalData.initials}`,
+            nextUser: temporaryCommisionRadioValue,
+            commisionStartDate: new Date(commisionStartDate).getTime(),
+            commisionChangeDate: isCommisionChangeDate(
+              temporaryCommision,
+              commisionStartDate
+            ),
+            rawDate: `${commisionStartDate}`,
+            timestamp: setTimestamp(commisionStartDate),
+            id,
+          })
+          .then(() => setSuccessSnackbarOpen(true))
+          .catch((err) => console.log(err));
       }
-      // console.log(dataToEdit);
-      // console.log({
-      //   title: titleValue,
-      //   date: moment(commisionStartDate).format('L'),
-      //   minus: setReason(minusReason),
-      //   plus: setReason(plusReason),
-      //   user: `${admin ? radioValue : personalData.initials}`,
-      //   temporaryCommision,
-      //   firstUser: `${admin ? radioValue : personalData.initials}`,
-      //   nextUser: temporaryCommisionRadioValue,
-      //   commisionStartDate: new Date(commisionStartDate).getTime(),
-      //   commisionChangeDate: isCommisionChangeDate(
-      //     temporaryCommision,
-      //     commisionStartDate
-      //   ),
-      //   rawDate: `${commisionStartDate}`,
-      //   timestamp: setTimestamp(commisionStartDate),
-      //   id,
-      //   dluMinusStart: moment(commisionStartDate).format('L'),
-      // });
 
       if (dataToEdit) {
         setEditDialogVisible(false);
