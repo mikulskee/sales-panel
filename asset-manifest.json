@@ -1,22 +1,22 @@
 {
   "files": {
     "main.css": "/sales-panel/static/css/main.f95a6a48.chunk.css",
-    "main.js": "/sales-panel/static/js/main.f34330b5.chunk.js",
-    "main.js.map": "/sales-panel/static/js/main.f34330b5.chunk.js.map",
+    "main.js": "/sales-panel/static/js/main.66ebb0b1.chunk.js",
+    "main.js.map": "/sales-panel/static/js/main.66ebb0b1.chunk.js.map",
     "runtime-main.js": "/sales-panel/static/js/runtime-main.612ebae2.js",
     "runtime-main.js.map": "/sales-panel/static/js/runtime-main.612ebae2.js.map",
-    "static/js/2.0c4fc092.chunk.js": "/sales-panel/static/js/2.0c4fc092.chunk.js",
-    "static/js/2.0c4fc092.chunk.js.map": "/sales-panel/static/js/2.0c4fc092.chunk.js.map",
+    "static/js/2.5b403af7.chunk.js": "/sales-panel/static/js/2.5b403af7.chunk.js",
+    "static/js/2.5b403af7.chunk.js.map": "/sales-panel/static/js/2.5b403af7.chunk.js.map",
     "index.html": "/sales-panel/index.html",
-    "precache-manifest.67d1dd9d9f551ea208bf51cc2ceffe3e.js": "/sales-panel/precache-manifest.67d1dd9d9f551ea208bf51cc2ceffe3e.js",
+    "precache-manifest.e12b4aecc9c7ae690c40f0bb0b1fd4f0.js": "/sales-panel/precache-manifest.e12b4aecc9c7ae690c40f0bb0b1fd4f0.js",
     "service-worker.js": "/sales-panel/service-worker.js",
     "static/css/main.f95a6a48.chunk.css.map": "/sales-panel/static/css/main.f95a6a48.chunk.css.map",
-    "static/js/2.0c4fc092.chunk.js.LICENSE.txt": "/sales-panel/static/js/2.0c4fc092.chunk.js.LICENSE.txt"
+    "static/js/2.5b403af7.chunk.js.LICENSE.txt": "/sales-panel/static/js/2.5b403af7.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.612ebae2.js",
-    "static/js/2.0c4fc092.chunk.js",
+    "static/js/2.5b403af7.chunk.js",
     "static/css/main.f95a6a48.chunk.css",
-    "static/js/main.f34330b5.chunk.js"
+    "static/js/main.66ebb0b1.chunk.js"
   ]
 }
