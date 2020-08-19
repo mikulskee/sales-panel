@@ -43,14 +43,49 @@ const MainDashboard = () => {
   const { personalData } = useContext(PersonalDataContext);
 
   useEffect(() => {
+    setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
+  }, []);
+  ///adding dlu minus depend on current timestamp
+  useEffect(() => {
     if (companyState) {
-      const recordToEdit = companyState.filter((item) => item.dluMinusStart)[0];
+      const recordsToEdit = companyState.filter((item) => item.dluMinusStart);
 
-      if (recordToEdit) {
+      recordsToEdit.forEach((recordToEdit) => {
+        const formattedDluMinusStart = moment(
+          recordToEdit.dluMinusStart
+        ).format('YYYY-MM-DD');
+        const formattedCurrentTimestamp = moment(
+          currentTimestamp,
+          'MMMM YYYY'
+        ).format('YYYY-MM-DD');
+
+        console.log(formattedDluMinusStart, formattedCurrentTimestamp);
         if (
-          moment(new Date(recordToEdit.dluMinusStart)).format('MMMM YYYY') ===
-          currentTimestamp
+          moment(formattedDluMinusStart).isAfter(
+            formattedCurrentTimestamp,
+            'month'
+          )
         ) {
+          if (recordToEdit.minus) {
+            console.log('1');
+            console.log(recordToEdit);
+            firebase
+              .firestore()
+              .collection(`company-state-general`)
+              .doc(recordToEdit.id)
+              .set(recordToEdit.originalData)
+              .catch((err) => console.log(err));
+          } else {
+            return;
+          }
+        } else if (
+          !moment(formattedDluMinusStart).isAfter(
+            formattedCurrentTimestamp,
+            'month'
+          )
+        ) {
+          console.log('2');
+
           if (!recordToEdit.minus) {
             firebase
               .firestore()
@@ -77,24 +112,36 @@ const MainDashboard = () => {
               })
               .catch((err) => console.log(err));
           } else return;
-        } else if (
-          moment(new Date(recordToEdit.dluMinusStart)).format('MMMM YYYY') !==
-            currentTimestamp &&
-          recordToEdit.minus
-        ) {
-          firebase
-            .firestore()
-            .collection(`company-state-general`)
-            .doc(recordToEdit.id)
-            .set(recordToEdit.originalData)
-            .catch((err) => console.log(err));
         }
-      }
+      });
+
+      // recordsToEdit.forEach((recordToEdit) => {
+      //   if (recordToEdit) {
+      //     const formattedDluMinusStart = moment(
+      //       recordToEdit.dluMinusStart
+      //     ).format('MMMM YYYY');
+      //     if (
+      //       moment(new Date(formattedDluMinusStart)).isAfter(
+      //         currentTimestamp,
+      //         'month'
+      //       )
+      //     )
+      //   }
+      // });
+    }
+  }, [currentTimestamp, companyState]);
+
+  useEffect(() => {
+    if (companyState) {
+      const recordToEdit = companyState.filter(
+        (item) => item.temporaryCommision
+      );
+
+      // console.log(
+      //   moment(recordToEdit[0].commisionStartDate).format('MMMM YYYY')
+      // );
     }
   });
-  useEffect(() => {
-    setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
-  }, []);
 
   useEffect(() => {
     if (companyState && personalData) {
