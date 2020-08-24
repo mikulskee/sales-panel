@@ -84,7 +84,6 @@ const ClientManagment = (props) => {
   useEffect(() => {
     if (dataToEdit) {
       setTitleValue(dataToEdit.title);
-      setCommisionStartDate(dataToEdit.rawDate);
       setRadioValue(dataToEdit.user);
       setTemporaryCommisionRadioValue(dataToEdit.nextUser);
       setTemporaryCommision(dataToEdit.temporaryCommision);
@@ -92,6 +91,9 @@ const ClientManagment = (props) => {
         setOldCommision(false);
       } else {
         setOldCommision(true);
+        setCommisionStartDate(moment(new Date()));
+        setTemporaryCommision(temporaryCommision);
+        setTemporaryCommisionRadioValue(temporaryCommisionRadioValue);
       }
       if (typeof dataToEdit.plus === 'string') {
         if (dataToEdit.plus === '') {
@@ -111,7 +113,7 @@ const ClientManagment = (props) => {
         setMinusReason('DLU');
       }
     }
-  }, [dataToEdit]);
+  }, [dataToEdit, temporaryCommision, temporaryCommisionRadioValue]);
 
   useEffect(() => {
     if (users) {
