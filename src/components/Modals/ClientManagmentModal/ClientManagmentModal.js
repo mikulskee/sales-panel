@@ -284,10 +284,13 @@ const ClientManagment = (props) => {
             .doc(id)
             .set({
               title: titleValue,
-              date: moment(commisionStartDate).format('L'),
+              date: `${
+                oldCommision ? '' : moment(commisionStartDate).format('L')
+              }`,
               minus: setReason(minusReason),
               plus: setReason(plusReason),
               user: `${admin ? radioValue : personalData.initials}`,
+              oldCommision,
               temporaryCommision,
               firstUser: `${admin ? radioValue : personalData.initials}`,
               nextUser: temporaryCommisionRadioValue,

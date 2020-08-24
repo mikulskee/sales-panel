@@ -13,6 +13,8 @@ import { AppContext } from '../contexts/AppContext';
 import CompanyStateMonthly from './CompanyStateMonthly';
 import { CompanyStateContext } from '../contexts/CompanyStateContext';
 import { PersonalDataContext } from '../contexts/PersonalDataContext';
+import { UsersContext } from '../contexts/UsersContext';
+import UserState from './UserState';
 
 const Alert = (props) => {
   return <MuiAlert elevation={6} variant='filled' {...props} />;
@@ -41,6 +43,7 @@ const MainDashboard = () => {
   const [dataForUnactiveClients, setDataForUnactiveClients] = useState();
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
+  const { users } = useContext(UsersContext);
 
   useEffect(() => {
     setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
@@ -133,13 +136,8 @@ const MainDashboard = () => {
 
   useEffect(() => {
     if (companyState) {
-      const recordToEdit = companyState.filter(
-        (item) => item.temporaryCommision
-      );
-
-      // console.log(
-      //   moment(recordToEdit[0].commisionStartDate).format('MMMM YYYY')
-      // );
+      users.map((u) => {});
+      console.log(users);
     }
   });
 
@@ -292,6 +290,24 @@ const MainDashboard = () => {
             dataForUnactiveClients={dataForUnactiveClients}
             currentTimestamp={currentTimestamp}
           />
+        ) : null}
+        {users ? (
+          <>
+            {users.map((user) => {
+              if (user.initials === personalData.initials) {
+                return null;
+              } else {
+                return (
+                  <UserState
+                    key={user.initials}
+                    initials={user.initials}
+                    name={user.name}
+                    currentTimestamp={currentTimestamp}
+                  />
+                );
+              }
+            })}
+          </>
         ) : null}
       </Grid>
       <Tooltips
