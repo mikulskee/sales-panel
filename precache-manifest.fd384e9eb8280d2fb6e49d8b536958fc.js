@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "b91482f2d7960aca458fae58eaf572d7",
+    "revision": "c45c2ba935b15c8c0ecb4241af239303",
     "url": "/sales-panel/index.html"
   },
   {
-    "revision": "7580336802e1475b79d5",
+    "revision": "213f2049727e6b3ff38e",
     "url": "/sales-panel/static/css/main.f95a6a48.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/sales-panel/static/js/2.01703821.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "7580336802e1475b79d5",
-    "url": "/sales-panel/static/js/main.2c29dfc6.chunk.js"
+    "revision": "213f2049727e6b3ff38e",
+    "url": "/sales-panel/static/js/main.a58b716a.chunk.js"
   },
   {
     "revision": "13dbaa3df9b7c2a572b4",
