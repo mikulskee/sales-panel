@@ -15,7 +15,36 @@ const AppContextProvider = (props) => {
   const [companyMonthlyStateVisible, setCompanyMonthlyStateVisible] = useState(
     'true'
   );
+  const [usersStateVisible, setUsersStateVisible] = useState({
+    KK: 'false',
+    EH: 'false',
+    VF: 'false',
+  });
 
+  useEffect(() => {
+    if (!localStorage.getItem('usersStateVisible')) {
+      localStorage.setItem(
+        'usersStateVisible',
+        JSON.stringify(usersStateVisible)
+      );
+    } else {
+      setUsersStateVisible(
+        JSON.parse(localStorage.getItem('usersStateVisible'))
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const changeUsersStateVisible = (state, initials) => {
+    console.log({ ...usersStateVisible, [initials]: state });
+    setUsersStateVisible({ ...usersStateVisible, [initials]: state });
+    localStorage.setItem(
+      'usersStateVisible',
+      JSON.stringify({
+        ...usersStateVisible,
+        [initials]: state,
+      })
+    );
+  };
   useEffect(() => {
     if (!localStorage.getItem('personalStateVisible')) {
       localStorage.setItem('personalStateVisible', `${personalStateVisible}`);
@@ -81,6 +110,8 @@ const AppContextProvider = (props) => {
         setSuccessDeleteSnackbarOpen,
         companyMonthlyStateVisible,
         changeCompanyMonthlyStateVisible,
+        usersStateVisible,
+        changeUsersStateVisible,
       }}
     >
       {props.children}

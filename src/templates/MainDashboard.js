@@ -32,6 +32,8 @@ const MainDashboard = () => {
     companyGeneralStateVisible,
     companyMonthlyStateVisible,
     changeCompanyMonthlyStateVisible,
+    usersStateVisible,
+    changeUsersStateVisible,
   } = useContext(AppContext);
 
   const [currentTimestamp, setCurrentTimestamp] = useState();
@@ -135,13 +137,6 @@ const MainDashboard = () => {
   }, [currentTimestamp, companyState]);
 
   useEffect(() => {
-    if (companyState) {
-      users.map((u) => {});
-      console.log(users);
-    }
-  });
-
-  useEffect(() => {
     if (companyState && personalData) {
       setDataForCompanyMonthlyState(
         companyState.filter((item) => item.timestamp === currentTimestamp)
@@ -182,7 +177,7 @@ const MainDashboard = () => {
     setSuccessDeleteSnackbarOpen(false);
   };
 
-  const handleVisibility = (component) => () => {
+  const handleVisibility = (component, initials) => () => {
     if (component === 'personal') {
       if (personalStateVisible === 'true') {
         changePersonalStateVisible('false');
@@ -194,6 +189,12 @@ const MainDashboard = () => {
         changeCompanyGeneralStateVisible('false');
       } else {
         changeCompanyGeneralStateVisible('true');
+      }
+    } else if (component === 'users') {
+      if (usersStateVisible[initials] === 'true') {
+        changeUsersStateVisible('false', initials);
+      } else {
+        changeUsersStateVisible('true', initials);
       }
     } else {
       if (companyMonthlyStateVisible === 'true') {
@@ -264,6 +265,39 @@ const MainDashboard = () => {
               margin: '10px',
             }}
           />
+          {users ? (
+            <>
+              {users.map((user) => {
+                if (user.initials === personalData.initials) {
+                  return null;
+                } else {
+                  return (
+                    <Chip
+                      avatar={
+                        <Avatar>
+                          {usersStateVisible[user.initials] === 'true' ? (
+                            <DoneIcon />
+                          ) : (
+                            <NotInterestedIcon />
+                          )}
+                        </Avatar>
+                      }
+                      label={`${user.initials}`}
+                      clickable
+                      onClick={handleVisibility('users', `${user.initials}`)}
+                      style={{
+                        opacity: `${
+                          usersStateVisible[user.initials] === 'true' ? 1 : 0.6
+                        }`,
+                        margin: '10px',
+                        backgroundColor: `${user.color}`,
+                      }}
+                    />
+                  );
+                }
+              })}
+            </>
+          ) : null}
         </Grid>
         <Grid
           container
@@ -298,12 +332,16 @@ const MainDashboard = () => {
                 return null;
               } else {
                 return (
-                  <UserState
-                    key={user.initials}
-                    initials={user.initials}
-                    name={user.name}
-                    currentTimestamp={currentTimestamp}
-                  />
+                  <>
+                    {usersStateVisible[user.initials] === 'true' ? (
+                      <UserState
+                        key={user.initials}
+                        initials={user.initials}
+                        name={user.name}
+                        currentTimestamp={currentTimestamp}
+                      />
+                    ) : null}
+                  </>
                 );
               }
             })}
