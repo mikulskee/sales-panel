@@ -125,6 +125,53 @@ const StateDashboard = (props) => {
       }
     }
   };
+
+  const setTemporaryBadge = (item, company) => {
+    console.log(item.commisionChangeDate - new Date().getTime());
+    const betweenCommisionChangeDateAndPresentTime =
+      item.commisionChangeDate - new Date().getTime();
+    const days = betweenCommisionChangeDateAndPresentTime / 1000 / 60 / 60 / 24;
+    if (
+      item.temporaryCommision &&
+      item.commisionStartDate <= new Date().getTime()
+    ) {
+      if (item.commisionChangeDate - new Date().getTime() <= 0) {
+        if (company) {
+          return null;
+        } else {
+          return '0';
+        }
+      } else {
+        return days.toFixed();
+      }
+    } else {
+      return null;
+    }
+  };
+
+  const setTemporaryIntitalsBadge = (item, company) => {
+    if (company) {
+      if (item.commisionChangeDate <= new Date().getTime()) {
+        return item.nextUser;
+      } else {
+        return item.firstUser;
+      }
+    } else {
+      return item.user;
+    }
+  };
+
+  const setTemporaryAvatarBadge = (item, company, users) => {
+    if (company) {
+      if (item.commisionChangeDate <= new Date().getTime()) {
+        return users.filter((u) => u.initials === item.nextUser)[0].img;
+      } else {
+        return users.filter((u) => u.initials === item.firstUser)[0].img;
+      }
+    } else {
+      return users.filter((u) => u.initials === item.user)[0].img;
+    }
+  };
   useEffect(() => {
     if (company) {
       setCompanyState(true);
@@ -207,14 +254,45 @@ const StateDashboard = (props) => {
               {item.user ? (
                 <>
                   {users.filter((u) => u.initials === item.user)[0].img ? (
-                    <Badge badgeContent={item.user} color='primary'>
-                      <Avatar
-                        style={{ margin: '0 auto' }}
-                        src={
-                          users.filter((u) => u.initials === item.user)[0].img
-                        }
-                      />
-                    </Badge>
+                    <>
+                      {item.temporaryCommision ? (
+                        <Badge
+                          badgeContent={setTemporaryBadge(item, company)}
+                          color='secondary'
+                          anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'left',
+                          }}
+                        >
+                          <Badge
+                            badgeContent={setTemporaryIntitalsBadge(
+                              item,
+                              company
+                            )}
+                            color='primary'
+                          >
+                            <Avatar
+                              style={{ margin: '0 auto' }}
+                              src={setTemporaryAvatarBadge(
+                                item,
+                                company,
+                                users
+                              )}
+                            />
+                          </Badge>
+                        </Badge>
+                      ) : (
+                        <Badge badgeContent={item.user} color='primary'>
+                          <Avatar
+                            style={{ margin: '0 auto' }}
+                            src={
+                              users.filter((u) => u.initials === item.user)[0]
+                                .img
+                            }
+                          />
+                        </Badge>
+                      )}
+                    </>
                   ) : (
                     <Chip
                       label={item.user}

@@ -222,6 +222,23 @@ const ClientManagment = (props) => {
       return reason;
     }
   };
+
+  const isCommisionStartDate = (temporaryCommision, commisionStartDate) => {
+    if (temporaryCommision) {
+      return new Date(commisionStartDate).getTime();
+    } else {
+      return null;
+    }
+  };
+  const isCommisionChangeDate = (temporaryCommision, commisionStartDate) => {
+    if (temporaryCommision) {
+      return new Date(
+        new Date(commisionStartDate).getTime() + 1209600000
+      ).getTime();
+    } else {
+      return null;
+    }
+  };
   const handleSubmit = () => {
     if (!titleValue && !minusReason && !plusReason) {
       setErrorTitle(true);
@@ -250,16 +267,43 @@ const ClientManagment = (props) => {
           plus: setReason(plusReason),
           user: `${admin ? radioValue : personalData.initials}`,
           temporaryCommision,
+          firstUser: `${admin ? radioValue : personalData.initials}`,
           nextUser: temporaryCommisionRadioValue,
-          commisionChangeDate: moment(commisionStartDate)
-            .add(14, 'days')
-            .format('L'),
+          commisionStartDate: isCommisionStartDate(
+            temporaryCommision,
+            commisionStartDate
+          ),
+          commisionChangeDate: isCommisionChangeDate(
+            temporaryCommision,
+            commisionStartDate
+          ),
           rawDate: `${commisionStartDate}`,
           timestamp: setTimestamp(),
           id,
         })
         .then(() => setSuccessSnackbarOpen(true))
         .catch((err) => console.log(err));
+
+      // console.log({
+      //   title: titleValue,
+      //   date: moment(commisionStartDate).format('L'),
+      //   minus: setReason(minusReason),
+      //   plus: setReason(plusReason),
+      //   user: `${admin ? radioValue : personalData.initials}`,
+      //   temporaryCommision,
+      //   nextUser: temporaryCommisionRadioValue,
+      //   commisionStartDate: isCommisionStartDate(
+      //     temporaryCommision,
+      //     commisionStartDate
+      //   ),
+      //   commisionChangeDate: isCommisionChangeDate(
+      //     temporaryCommision,
+      //     commisionStartDate
+      //   ),
+      //   rawDate: `${commisionStartDate}`,
+      //   timestamp: setTimestamp(),
+      //   id,
+      // });
       if (dataToEdit) {
         setEditDialogVisible(false);
       } else {

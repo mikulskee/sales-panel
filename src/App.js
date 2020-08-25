@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch, HashRouter } from 'react-router-dom';
 import MainTemplate from './templates/MainTemplate';
 import CompanyStateContextProvider from './contexts/CompanyStateContext';
 import UserContextProvider from './contexts/UsersContext';
@@ -14,13 +14,13 @@ const App = () => {
       <PersonalDataContextProvider>
         <CompanyStateContextProvider>
           <AppContextProvider>
-            <BrowserRouter>
+            <HashRouter basename='/'>
               <Header />
               <Switch>
                 <Route path='/' exact component={MainTemplate} />
                 <Route path='/dashboard' component={MainDashboard} />
               </Switch>
-            </BrowserRouter>
+            </HashRouter>
           </AppContextProvider>
         </CompanyStateContextProvider>
       </PersonalDataContextProvider>
