@@ -193,13 +193,6 @@ const StateDashboard = (props) => {
       setPlusCommisions(
         data
           .filter((item) => (item.plus === '' || item.plus ? item : null))
-          .filter(
-            (item) =>
-              !moment(item.commisionStartDate).isAfter(
-                `${moment(`${currentTimestamp}`, 'MMMM YYYY')}`,
-                'month'
-              )
-          )
           .sort(function (a, b) {
             if (a.title < b.title) {
               return -1;
@@ -213,13 +206,6 @@ const StateDashboard = (props) => {
       setMinusCommisions(
         data
           .filter((item) => (item.minus === '' || item.minus ? item : null))
-          .filter(
-            (item) =>
-              !moment(item.commisionStartDate).isAfter(
-                `${moment(`${currentTimestamp}`, 'MMMM YYYY')}`,
-                'month'
-              )
-          )
           .sort(function (a, b) {
             if (a.title < b.title) {
               return -1;

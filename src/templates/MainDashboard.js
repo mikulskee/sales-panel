@@ -43,28 +43,37 @@ const MainDashboard = () => {
   ] = useState();
   const [dataForPersonalState, setDataForPersonalState] = useState();
   const [dataForUnactiveClients, setDataForUnactiveClients] = useState();
+  const [dataForGeneralState, setDataForGeneralState] = useState();
   const { companyState } = useContext(CompanyStateContext);
   const { personalData } = useContext(PersonalDataContext);
   const { users } = useContext(UsersContext);
 
   useEffect(() => {
     setCurrentTimestamp(moment(new Date()).format('MMMM YYYY'));
+    
+
   }, []);
   ///adding dlu minus depend on current timestamp
   useEffect(() => {
-    if (companyState) {
+    if (companyState && currentTimestamp) {
+
+      console.log(companyState.filter(item => item.title === "AAA"))
       const recordsToEdit = companyState.filter((item) => item.dluMinusStart);
+    
 
       recordsToEdit.forEach((recordToEdit) => {
         const formattedDluMinusStart = moment(
           recordToEdit.dluMinusStart
         ).format('YYYY-MM-DD');
+
+     
+
         const formattedCurrentTimestamp = moment(
           currentTimestamp,
           'MMMM YYYY'
         ).format('YYYY-MM-DD');
+   
 
-        console.log(formattedDluMinusStart, formattedCurrentTimestamp);
         if (
           moment(formattedDluMinusStart).isAfter(
             formattedCurrentTimestamp,
@@ -72,7 +81,7 @@ const MainDashboard = () => {
           )
         ) {
           if (recordToEdit.minus) {
-            console.log('1');
+    
             console.log(recordToEdit);
             firebase
               .firestore()
@@ -80,6 +89,7 @@ const MainDashboard = () => {
               .doc(recordToEdit.id)
               .set(recordToEdit.originalData)
               .catch((err) => console.log(err));
+              return
           } else {
             return;
           }
@@ -89,9 +99,9 @@ const MainDashboard = () => {
             'month'
           )
         ) {
-          console.log('2');
 
           if (!recordToEdit.minus) {
+
             firebase
               .firestore()
               .collection(`company-state-general`)
@@ -116,36 +126,31 @@ const MainDashboard = () => {
                 originalData: recordToEdit,
               })
               .catch((err) => console.log(err));
+              return
+
           } else return;
         }
       });
-
-      // recordsToEdit.forEach((recordToEdit) => {
-      //   if (recordToEdit) {
-      //     const formattedDluMinusStart = moment(
-      //       recordToEdit.dluMinusStart
-      //     ).format('MMMM YYYY');
-      //     if (
-      //       moment(new Date(formattedDluMinusStart)).isAfter(
-      //         currentTimestamp,
-      //         'month'
-      //       )
-      //     )
-      //   }
-      // });
     }
   }, [currentTimestamp, companyState]);
 
   useEffect(() => {
     if (companyState && personalData) {
+
+  
       setDataForCompanyMonthlyState(
         companyState.filter((item) => item.timestamp === currentTimestamp)
       );
+      
+      
+      setDataForGeneralState( companyState.filter(item => moment(item.timestamp, "MMMM YYYY")
+      .isBefore(moment(currentTimestamp, "MMMM YYYY"), "month") || item.timestamp === currentTimestamp || item.timestamp === ""))
 
       setDataForUnactiveClients(
         companyState
           .filter((item) => item.minus)
           .filter((item) => item.minus === 'DLU')
+          .filter(item => moment(item.timestamp, "MMMM YYYY").isBefore(moment(currentTimestamp, "MMMM YYYY"), "month") || item.timestamp === currentTimestamp || item.timestamp === "")
       );
 
       if (personalData.admin) {
@@ -323,6 +328,7 @@ const MainDashboard = () => {
           <CompanyState
             dataForUnactiveClients={dataForUnactiveClients}
             currentTimestamp={currentTimestamp}
+            data={dataForGeneralState}
           />
         ) : null}
         {users ? (
