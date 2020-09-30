@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/sales-panel/static/css/main.4d683f3e.chunk.css",
-    "main.js": "/sales-panel/static/js/main.f0661cf3.chunk.js",
-    "main.js.map": "/sales-panel/static/js/main.f0661cf3.chunk.js.map",
+    "main.js": "/sales-panel/static/js/main.a08af141.chunk.js",
+    "main.js.map": "/sales-panel/static/js/main.a08af141.chunk.js.map",
     "runtime-main.js": "/sales-panel/static/js/runtime-main.612ebae2.js",
     "runtime-main.js.map": "/sales-panel/static/js/runtime-main.612ebae2.js.map",
     "static/js/2.32d3675a.chunk.js": "/sales-panel/static/js/2.32d3675a.chunk.js",
     "static/js/2.32d3675a.chunk.js.map": "/sales-panel/static/js/2.32d3675a.chunk.js.map",
     "index.html": "/sales-panel/index.html",
-    "precache-manifest.745ca3832dcaf6cbd93428480dabe4ff.js": "/sales-panel/precache-manifest.745ca3832dcaf6cbd93428480dabe4ff.js",
+    "precache-manifest.38f340a15ab76ce0e23820ddbde9c6a1.js": "/sales-panel/precache-manifest.38f340a15ab76ce0e23820ddbde9c6a1.js",
     "service-worker.js": "/sales-panel/service-worker.js",
     "static/css/main.4d683f3e.chunk.css.map": "/sales-panel/static/css/main.4d683f3e.chunk.css.map",
     "static/js/2.32d3675a.chunk.js.LICENSE.txt": "/sales-panel/static/js/2.32d3675a.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.612ebae2.js",
     "static/js/2.32d3675a.chunk.js",
     "static/css/main.4d683f3e.chunk.css",
-    "static/js/main.f0661cf3.chunk.js"
+    "static/js/main.a08af141.chunk.js"
   ]
 }
